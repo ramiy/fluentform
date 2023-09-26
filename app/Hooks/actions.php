@@ -150,6 +150,8 @@ add_action('admin_init', function () {
     if ($page && in_array($page, $disablePages)) {
         remove_all_actions('admin_notices');
         (new \FluentForm\App\Modules\Registerer\ReviewQuery())->register();
+        (new \FluentForm\App\Modules\Registerer\SubscribeQuery())->register();
+//        (new \FluentForm\App\Modules\Track\TrackModule())->register();
     }
 });
 

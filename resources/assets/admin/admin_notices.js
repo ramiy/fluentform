@@ -6,7 +6,7 @@ const ffNoticeApp = {
             e.preventDefault();
             let noticeName = jQuery(this).attr('data-notice_name');
             let noticeType = jQuery(this).attr('data-notice_type');
-            
+
             jQuery('#ff_notice_' + noticeName).remove();
 
             const url = FluentFormsGlobal.$rest.route('noticeAction')
@@ -24,27 +24,66 @@ const ffNoticeApp = {
 
     },
 
+    initSubscription() {
+        let $btn = jQuery('.ff_subscribe_yes');
+        $btn.on('click', function (e) {
+            e.preventDefault();
+            $btn.addClass('is_disabled')
+            let noticeName = jQuery(this).attr('data-notice_name');
+            let noticeType = jQuery(this).attr('data-notice_type');
+
+            const email = $btn.closest(".ff_notice_buttons").find("input[type='email']").val();
+            const name = $btn.closest(".ff_notice_buttons").find("input[type='text']").val();
+
+            const url = FluentFormsGlobal.$rest.route('noticeAction');
+            FluentFormsGlobal.$rest.post(url, {
+                notice_name: noticeName,
+                email : email,
+                name : name,
+                action_type: noticeType
+            })
+                .then( (response) =>{
+                    $btn.removeClass('is_disabled')
+                    if (response && response.success == true){
+                        jQuery('#ff_notice_' + noticeName + ' .ff_notice_container').remove();
+                    }
+                    const $ffNoticeResponse = jQuery('#ff_notice_' + noticeName + ' .ff_notice_response');
+                    $ffNoticeResponse.html(response.message);
+                    $ffNoticeResponse.show();
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        });
+
+    },
+
     initTrackYes() {
         let $btn = jQuery('.ff_track_yes');
         $btn.on('click', function (e) {
             e.preventDefault();
             let noticeName = jQuery(this).attr('data-notice_name');
-            let emailEnabled = 0;
-            if (jQuery('#ff-optin-send-email').attr('checked')) {
-                 emailEnabled = 1;
-            }
+            let noticeType = jQuery(this).attr('data-notice_type');
 
-            jQuery('#ff_notice_' + noticeName).remove();
+            jQuery(this).attr('disabled', true);
 
-            FluentFormsGlobal.$post({
-                action: 'fluentform_notice_action_track_yes',
+            const url = FluentFormsGlobal.$rest.route('noticeAction');
+            FluentFormsGlobal.$rest.post(url, {
                 notice_name: noticeName,
-                email_enabled: emailEnabled
+                email: false,
+                share_essentials: true,
+                action_type: noticeType
             })
                 .then(function (response) {
-                    console.log(response);
+                    if (response.status == 'success'){
+                        jQuery('#ff_notice_' + noticeName + ' .ff_notice_container').remove();
+                        var $ffNoticeResponse = jQuery('#ff_notice_' + noticeName + ' .ff_notice_response');
+                        $ffNoticeResponse.html(response.message);
+                    }
+
                 })
-                .fail(function (error) {
+                .catch(function (error) {
                     console.log(error);
                 });
         });
@@ -85,7 +124,7 @@ const ffNoticeApp = {
                 });
         });
     },
-    handleReviewQuery(){
+    handleReviewQuery() {
         let $btn = jQuery('.ff_review_now');
         $btn.on('click', function (e) {
             e.preventDefault();
@@ -93,7 +132,7 @@ const ffNoticeApp = {
             let noticeName = jQuery(this).attr('data-notice_name');
 
             const route = FluentFormsGlobal.$rest.route('noticeAction')
-            FluentFormsGlobal.$rest.post(route,{
+            FluentFormsGlobal.$rest.post(route, {
                 notice_name: noticeName,
             })
                 .then(function (response) {
@@ -117,6 +156,7 @@ const ffNoticeApp = {
         jQuery(document).ready(() => {
             this.initNagButton();
             this.initTrackYes();
+            this.initSubscription();
             this.initSmtpInstall();
             this.handleReviewQuery();
         });

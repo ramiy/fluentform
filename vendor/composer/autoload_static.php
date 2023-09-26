@@ -126,6 +126,7 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
         'FluentForm\\App\\Modules\\Registerer\\AdminBar' => __DIR__ . '/../..' . '/app/Modules/Registerer/AdminBar.php',
         'FluentForm\\App\\Modules\\Registerer\\Menu' => __DIR__ . '/../..' . '/app/Modules/Registerer/Menu.php',
         'FluentForm\\App\\Modules\\Registerer\\ReviewQuery' => __DIR__ . '/../..' . '/app/Modules/Registerer/ReviewQuery.php',
+        'FluentForm\\App\\Modules\\Registerer\\SubscribeQuery' => __DIR__ . '/../..' . '/app/Modules/Registerer/SubscribeQuery.php',
         'FluentForm\\App\\Modules\\Registerer\\TranslationString' => __DIR__ . '/../..' . '/app/Modules/Registerer/TranslationString.php',
         'FluentForm\\App\\Modules\\Renderer\\GlobalSettings\\Settings' => __DIR__ . '/../..' . '/app/Modules/Renderer/GlobalSettings/Settings.php',
         'FluentForm\\App\\Modules\\Settings\\Settings' => __DIR__ . '/../..' . '/app/Modules/Settings/Settings.php',

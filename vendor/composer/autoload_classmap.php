@@ -98,6 +98,7 @@ return array(
     'FluentForm\\App\\Modules\\Registerer\\AdminBar' => $baseDir . '/app/Modules/Registerer/AdminBar.php',
     'FluentForm\\App\\Modules\\Registerer\\Menu' => $baseDir . '/app/Modules/Registerer/Menu.php',
     'FluentForm\\App\\Modules\\Registerer\\ReviewQuery' => $baseDir . '/app/Modules/Registerer/ReviewQuery.php',
+    'FluentForm\\App\\Modules\\Registerer\\SubscribeQuery' => $baseDir . '/app/Modules/Registerer/SubscribeQuery.php',
     'FluentForm\\App\\Modules\\Registerer\\TranslationString' => $baseDir . '/app/Modules/Registerer/TranslationString.php',
     'FluentForm\\App\\Modules\\Renderer\\GlobalSettings\\Settings' => $baseDir . '/app/Modules/Renderer/GlobalSettings/Settings.php',
     'FluentForm\\App\\Modules\\Settings\\Settings' => $baseDir . '/app/Modules/Settings/Settings.php',

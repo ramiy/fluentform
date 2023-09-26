@@ -11,7 +11,7 @@ class ReviewQuery
     public function register()
     {
         if ($this->shouldRegister()) {
-            add_action('fluentform/global_menu', [$this, 'show'], 99);
+            $this->show();
         }
     }
 
@@ -29,7 +29,6 @@ class ReviewQuery
         $notice = new AdminNoticeController();
         $msg = $this->getMessage();
         $notice->addNotice($msg);
-        $notice->showNotice();
     }
 
     private function getMessage()
@@ -37,6 +36,7 @@ class ReviewQuery
         return [
             'name'    => 'review_query',
             'title'   => '',
+            'class' => 'fluent_info_notice',
             'message' => sprintf('Thank you for using Fluent Forms. We would be very grateful if you could share your experience and leave a review for us in %s',
                 '<a target="_blank" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">WordPress.org</a>. Your reviews inspire us to keep improving the plugin and delivering a better user experience.'),
             'links' => [

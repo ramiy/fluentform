@@ -396,11 +396,6 @@ $app->addAction(
     }
 );
 
-$app->addAction('wp_ajax_fluentform_notice_action_track_yes', function () {
-    Acl::hasAnyFormPermission();
-    (new FluentForm\App\Modules\Track\TrackModule())->sendInitialInfo();
-});
-
 $app->addAction('wp_ajax_fluentform_install_fluentsmtp', function () {
     Acl::verify('fluentform_settings_manager');
     (new FluentForm\App\Modules\Track\SetupModule())->installPlugin('fluent-smtp');

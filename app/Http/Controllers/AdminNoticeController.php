@@ -1,25 +1,37 @@
 <?php
 namespace FluentForm\App\Http\Controllers;
 
+use FluentForm\App\Modules\Registerer\SubscribeQuery;
+use FluentForm\App\Modules\Track\TrackModule;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class AdminNoticeController extends Controller
 {
-    private $notice = false;
+    private static $notice = [];
+    private static $noticeShowing = false;
     private $noticeDisabledTime = 60 * 60 * 24 * 15; // 15 days
     private $noticePrefKey = '_fluentform_notice_pref';
     private $pref = false;
     
+    public function __construct()
+    {
+        parent::__construct();
+        add_action('fluentform/global_menu', [$this, 'showNotice'], 99);
+    
+    }
+    
     public function showNotice()
     {
-        if ($notice = $this->notice) {
-            $this->renderNotice($notice, $notice['name']);
+        if (is_array(self::$notice) && !self::$noticeShowing) {
+            $shuffledNoticeKey = array_rand(self::$notice);
+            $selectedNotice = self::$notice[$shuffledNoticeKey];
+            $this->renderNotice($selectedNotice, $selectedNotice['name']);
         }
     }
     
     public function addNotice($notice)
     {
-        $this->notice = $notice;
+        self::$notice[$notice['name']] = $notice;
     }
     
     public function noticeActions()
@@ -27,25 +39,53 @@ class AdminNoticeController extends Controller
         $noticeName = sanitize_text_field($this->request->get('notice_name'));
         $actionType = sanitize_text_field($this->request->get('action_type', 'permanent'));
         
-        if ($noticeName == 'track_data_notice') {
+        if ($noticeName == 'track_data_query' && $actionType == 'approved') {
             $notificationPref = $this->getNoticePref();
             $notificationPref[$noticeName] = [
-                'status'           => 'no',
-                'email_subscribed' => 'no',
-                'timestamp'        => time()
+                'permanent'        => 'yes',
             ];
             update_option($this->noticePrefKey, $notificationPref, 'no');
+            update_option('_fluentform_share_essential','yes','no');
             $this->pref = $notificationPref;
-        } elseif ($noticeName == 'review_query') {
-            $this->disableNotice($noticeName, $actionType);
-            return $this->sendSuccess(true);
+            
+            (new TrackModule())->maybeSendTrackInfo();
+    
+            return $this->sendSuccess([
+                'status' => 'success',
+                'message' => __('Thank you for your help!','fluentform')
+    
+            ]);
+        } else {
+            if ($noticeName == 'subscribe_query' && $actionType == 'approved') {
+                $email = sanitize_email($this->request->get('email', ''));
+                $name = sanitize_text_field($this->request->get('name', ''));
+                if (!is_email($email)) {
+                    return $this->sendError([
+                        'status'  => 'error',
+                        'message' => __('Please enter a valid email!','fluentform')
+                    ]);
+                }
+                if (empty($name)) {
+                    return $this->sendError([
+                        'status'  => 'error',
+                        'message' => __('Please enter your name!','fluentform')
+                    ]);
+                }
+                $notificationPref = $this->getNoticePref();
+                $notificationPref[$noticeName] = [
+                    'permanent'        => 'yes',
+                    'email_subscribed' => 'yes',
+                    'email'            => $email,
+                ];
+                update_option($this->noticePrefKey, $notificationPref, 'no');
+                $response  = (new SubscribeQuery())->sendSubscriptionInfo($name,$email);
+    
+                $this->pref = $notificationPref;
+                return $this->sendSuccess($response);
+            }
         }
         $this->disableNotice($noticeName, $actionType);
-        
-        return $this->sendSuccess([
-            'message' => 'success'
-        ]);
-        die();
+        return $this->sendSuccess(true);
     }
     
     public function renderNotice($notice, $notice_key = false)
@@ -58,6 +98,7 @@ class AdminNoticeController extends Controller
                 return;
             }
         }
+        self::$noticeShowing = true;
         wp_enqueue_style('fluentform_admin_notice', fluentformMix('css/admin_notices.css'));
         wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), array(
             'jquery'
@@ -65,14 +106,9 @@ class AdminNoticeController extends Controller
         wpFluentForm('view')->render('admin.notices.info', array(
             'notice'        => $notice,
             'show_logo'     => false,
-            'show_hide_nag' => false,
+            'show_hide_nag' => isset($notice['show_hide_nag']),
             'logo_url'      => fluentformMix('img/fluent_icon.png')
         ));
-    }
-    
-    public function hasNotice()
-    {
-        return ($this->notice) ? true : false;
     }
     
     private function disableNotice($notice_key, $type = 'temp')

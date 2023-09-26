@@ -28,6 +28,12 @@
     > h3 {
       margin: 0px;
     }
+    p{
+      font-size: 14px;
+    }
+    label{
+      font-weight: 500;
+    }
     .ff_temp_hide_nag {
       position: absolute;
       right: 5px;
@@ -42,14 +48,17 @@
     .text-button{
       color: inherit;
     }
+
   }
 }
-#ff_notice_review_query {
+
+.fluent_info_notice {
   background: #fff;
   margin: 8px 24px 0 24px;
   border-left: 4px solid $--color-success;
   border-radius: 4px;
   box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+  margin-bottom: 10px;
   p{
     margin: 0 0 8px 0;
     padding: 0;
@@ -60,11 +69,52 @@
     .ff_temp_hide_nag{
       top:35%;
     }
+    h3{
+      color: #1e1f21d9;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black;
+
+      .tooltiptext {
+        visibility: hidden;
+        width: 500px;
+        transition: 0.4s;
+        background-color: black;
+        color: #fff;
+        text-align: justify;
+        padding: 10px;
+        border-radius: 6px;
+        opacity: 0;
+        position: absolute;
+        z-index: 1;
+      }
+
+      &:hover {
+        .tooltiptext {
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .ff_notice_response{
+    display: none;
+    background: #00b27f3d;
+    padding: 10px;
+  }
+  .is_disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    text-decoration: none;
   }
 }
 
-#ff_notice_review_query + .ff_global_setting_wrap,
-#ff_notice_review_query + .ff_tools_wrap,
-.error_notice_ff_fluentform_pro_license + .ff_tools_wrap {
-  margin-top: 20px;
+#ff_notice_review_query {
+  & + .ff_global_setting_wrap,
+  & + .ff_tools_wrap,
+  & + .error_notice_ff_fluentform_pro_license {
+    margin-top: 20px;
+  }
 }
