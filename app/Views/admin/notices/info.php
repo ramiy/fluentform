@@ -15,7 +15,7 @@
         <div class="ff_notice_buttons">
             <?php if (isset($notice['inputs'])) {
                 foreach ($notice['inputs'] as $input) {
-                    echo "<label for='{$input['label']}'>{$input['label']} </label><input type='{$input['type']}' value='{$input['value']}' placeholder='{$input['label']}'></input> ";
+                    echo "<label for='" . esc_attr($input['label']) . "'>" . esc_attr($input['label']) . " </label><input type='" .esc_attr( $input['type']). "' value='" .esc_attr( $input['value']). "' placeholder='" . esc_attr($input['label']) . "'></input> ";
                 }
             } ?>
             <?php foreach ($notice['links'] as $link): ?>
