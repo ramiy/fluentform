@@ -23,7 +23,7 @@ class SubscribeQuery
         $hasTwoWeeksOldSubmission = strtotime($firstSubmission->created_at) < strtotime('-14 days');
         
         if (Helper::isFluentAdminPage() && !wp_doing_ajax() && $hasTwoWeeksOldSubmission) {
-            return Form::count() > 3;
+            return true;
         }
         return false;
     }
