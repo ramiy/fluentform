@@ -43,6 +43,7 @@
                             :form_items="form_items"
                             :editItem="editItem"
                             :listItem="listItem"
+                            :prop="key"
                             :key="i">
                         </component>
                     </template>

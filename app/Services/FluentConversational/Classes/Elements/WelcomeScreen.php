@@ -56,6 +56,7 @@ class WelcomeScreen extends BaseFieldManager
                     'minWidth'        => '',
                 ],
                 'button_ui' => (object) [
+                    'title'=> __('Button Text', 'fluentform'),
                     'text' => 'Start Here',
                     'type' => 'default',
                 ],
@@ -85,15 +86,26 @@ class WelcomeScreen extends BaseFieldManager
             'description',
             'align',
             'btn_text',
-            'button_ui',
         ];
     }
 
     public function getAdvancedEditorElements()
     {
         return [
+            'button_ui',
             'button_style',
             'button_size',
+        ];
+    }
+
+    public function advancedEditorElement()
+    {
+        return [
+            'button_ui' => [
+                'template'  => 'prevNextButton',
+                'label'     => __('Button', 'fluentform'),
+                'help_text' => __('This is form welcome button.', 'fluentform'),
+            ],
         ];
     }
 
