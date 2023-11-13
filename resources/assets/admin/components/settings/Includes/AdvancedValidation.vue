@@ -75,7 +75,7 @@
         data() {
             return {
                 labels: {
-                    status_label: 'Enabled Advanced Form Validation',
+                    status_label: 'Enable Advanced Form Validation',
                     notification_if_start: 'Proceed/Fail form submission if',
                     notification_if_end: 'of the following match:'
                 },

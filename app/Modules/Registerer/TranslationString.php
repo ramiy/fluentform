@@ -735,7 +735,7 @@ class TranslationString
             'A week ago' => __('A week ago', 'fluentform'),
             'All Data' => __('All Data', 'fluentform'),
             'All Data Without Hidden Fields' => __('All Data Without Hidden Fields', 'fluentform'),
-            'Enabled Advanced Form Validation' => __('Enabled Advanced Form Validation', 'fluentform'),
+            'Enable Advanced Form Validation' => __('Enable Advanced Form Validation', 'fluentform'),
             'Proceed/Fail form submission if' => __('Proceed/Fail form submission if', 'fluentform'),
             'Fail the submission if conditions met' => __('Fail the submission if conditions met', 'fluentform'),
             'Let Submit the form if conditions are met' => __('Let Submit the form if conditions are met', 'fluentform'),
