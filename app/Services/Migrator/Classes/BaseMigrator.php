@@ -589,7 +589,7 @@ abstract class BaseMigrator
                     'layout_class'       => $args['layout_class']
                 ],
                 'editor_options' => [
-                    'title'      => __('Check Box', 'fluentform'),
+                    'title'      => __('Checkbox', 'fluentform'),
                     'icon_class' => 'ff-edit-checkbox-1',
                     'template'   => 'inputCheckable'
                 ],
