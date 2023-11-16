@@ -465,9 +465,9 @@ add_action('save_post', function ($post_id) use ($app) {
     if (!is_post_type_viewable(get_post_type($post_id))) {
         return;
     }
-
-    $post_content = $app->request->get('post_content');
-    if ($post_content) {
+    
+    $post_content = isset($_REQUEST['post_content']) ? $_REQUEST['post_content'] : false;
+    if ($post_content && is_string($post_content)) {
         $post_content = wp_kses_post(wp_unslash($post_content));
     } else {
         $post = get_post($post_id);
