@@ -341,6 +341,19 @@ class SubmissionService
                     @unlink($file);
                 }
             }
+            // Empty Temp Uploads
+            if (defined('FLUENTFORMPRO')) {
+                $tempDir = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/temp/';
+                $files = glob($tempDir . '*');
+                if(!empty($files)){
+                    foreach ($files as $file) {
+                        if (basename($file) !== 'index.php') {
+                            unlink($file);
+                        }
+                    }
+                }
+            }
+           
         }
     }
 
