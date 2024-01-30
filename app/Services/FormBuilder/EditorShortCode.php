@@ -59,6 +59,20 @@ class EditorShortCode
 
         return $formShortCodes;
     }
+    
+    public static function getFormLabelShortCodes($form)
+    {
+        $form = static::getForm($form);
+        $formFields = FormFieldsParser::getShortCodeInputs($form, ['admin_label', 'label',]);
+        $formLabelShortCodes = [
+            'shortcodes' => [],
+            'title'      => 'Label Options',
+        ];
+        foreach ($formFields as $key => $value) {
+            $formLabelShortCodes['shortcodes']['{labels.' . $key . '}'] = wp_strip_all_tags ($value['admin_label']);
+        }
+        return $formLabelShortCodes;
+    }
 
     public static function getSubmissionShortcodes($form = false)
     {
@@ -111,6 +125,7 @@ class EditorShortCode
         $form = static::getForm($form);
         $groups = [
             static::getFormShortCodes($form),
+            static::getFormLabelShortCodes($form),
             static::getGeneralShortCodes(),
             static::getSubmissionShortcodes($form),
         ];
