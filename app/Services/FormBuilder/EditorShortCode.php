@@ -9,7 +9,7 @@ class EditorShortCode
     public static function getGeneralShortCodes()
     {
         return [
-            'title'      => 'General SmartCodes',
+            'title'      => __('General SmartCodes','fluentform'),
             'shortcodes' => [
                 '{wp.admin_email}'            => __('Admin Email', 'fluentform'),
                 '{wp.site_url}'               => __('Site URL', 'fluentform'),
@@ -46,7 +46,7 @@ class EditorShortCode
 
         $formShortCodes = [
             'shortcodes' => [],
-            'title'      => 'Input Options',
+            'title'      => __('Input Options','fluentform')
         ];
 
         $formShortCodes['shortcodes']['{all_data}'] = 'All Submitted Data';
@@ -66,7 +66,7 @@ class EditorShortCode
         $formFields = FormFieldsParser::getShortCodeInputs($form, ['admin_label', 'label',]);
         $formLabelShortCodes = [
             'shortcodes' => [],
-            'title'      => 'Label Options',
+            'title'      => __('Label Options','fluentform')
         ];
         foreach ($formFields as $key => $value) {
             $formLabelShortCodes['shortcodes']['{labels.' . $key . '}'] = wp_strip_all_tags ($value['admin_label']);
@@ -100,7 +100,7 @@ class EditorShortCode
         }
 
         return [
-            'title'      => 'Entry Attributes',
+            'title'      => __('Entry Attributes','fluentform'),
             'shortcodes' => $submissionProperties,
         ];
     }
@@ -108,7 +108,7 @@ class EditorShortCode
     public static function getPaymentShortcodes($form)
     {
         return [
-            'title'      => 'Payment Details',
+            'title'      => __('Payment Details','fluentform'),
             'shortcodes' => [
                 '{payment.receipt}'        => __('Payment Receipt', 'fluentform'),
                 '{payment.summary}'        => __('Payment Summary', 'fluentform'),
@@ -135,8 +135,7 @@ class EditorShortCode
         }
     
         $groups = apply_filters_deprecated(
-            'fluentform_form_settings_smartcodes',
-            [
+            'fluentform_form_settings_smartcodes', [
                 $groups,
                 $form
             ],

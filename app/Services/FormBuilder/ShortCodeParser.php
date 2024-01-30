@@ -118,7 +118,7 @@ class ShortCodeParser
                 $value = static::getFormData($formProperty, $isHtml);
             }else if (false !== strpos($matches[1], 'labels.')) {
                 $formLabelProperty = substr($matches[1], strlen('labels.'));
-                $value = static::getFormLabelData($formLabelProperty, $isHtml);
+                $value = static::getFormLabelData($formLabelProperty);
             } elseif (false !== strpos($matches[1], 'user.')) {
                 $userProperty = substr($matches[1], strlen('user.'));
                 $value = static::getUserData($userProperty);
