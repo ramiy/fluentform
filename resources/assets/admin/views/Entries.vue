@@ -502,6 +502,15 @@
             </div>
 
         </div>
+
+	    <entries-print
+		    :form_id="form_id"
+		    :has_pdf="has_pdf"
+		    :show_print="show_print"
+		    :entry_ids="selection_ids"
+		    :sort_by="sort_by"
+		    @close="show_print = false"
+	    />
     </div>
 </template>
 
@@ -516,6 +525,7 @@
     import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
+    import EntriesPrint from '@/admin/views/EntriesPrint';
 
     export default {
         name: 'FormEntries',
@@ -528,6 +538,7 @@
             BtnGroupItem,
             SectionHead,
             SectionHeadContent,
+	        EntriesPrint,
             ImportEntriesModal
         },
         watch: {
@@ -570,6 +581,7 @@
         data() {
             return {
                 loading: true,
+	            show_print: false,
                 entry_type: this.$route.query.type || '',
                 sort_by: this.$route.query.sort_by || "DESC",
                 selectedPaymentStatuses: [],
@@ -672,7 +684,11 @@
                         {
                             label: 'Remove from Favorites',
                             action: 'other.unmark_favorite'
-                        }
+                        },
+	                    {
+                            label: 'Print Entries',
+                            action: 'print'
+                        },
                     ]
                 };
 
@@ -901,6 +917,10 @@
                 }
             },
             operationOnSelectedEntries(actionType) {
+				if ('print' === actionType) {
+					this.show_print = true;
+					return;
+				}
                 let data = {
                     form_id: this.form_id,
                     entries: this.selection_ids,

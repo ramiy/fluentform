@@ -8,6 +8,11 @@
             </section-head-content>
             <section-head-content>
                 <btn-group>
+	                <btn-group-item>
+		                <el-button size="medium" @click="show_print = true">
+			                <i class="ff-icon el-icon-printer"/> <span>{{$t('Print')}}</span>
+		                </el-button>
+	                </btn-group-item>
                     <btn-group-item>
                         <el-button size="medium" :loading="entry_changing_prev" @click="changeEntry('-')" :disabled="!prevId">
                             <i class="ff-icon ff-icon-arrow-left"/> <span>{{$t('Previous')}}</span>
@@ -253,6 +258,13 @@
                 :fields="formFields"
             ></edit-entry>
         </el-dialog>
+	    <entries-print
+		    :form_id="form_id"
+		    :has_pdf="has_pdf"
+		    :show_print="show_print"
+		    :entry_ids="entry_id"
+		    @close="show_print = false"
+	    />
     </div>
 </template>
 
@@ -276,11 +288,13 @@
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
+    import EntriesPrint from '@/admin/views/EntriesPrint';
 
     export default {
         name: 'Entry',
         props: ['has_pdf'],
         components: {
+	        EntriesPrint,
             remove: remove,
             entry_notes: entry_notes,
             submission_logs,
@@ -304,6 +318,7 @@
             return {
                 loading: true,
                 editTable: false,
+	            show_print: false,
                 entry: false,
                 view_as_json: false,
                 entry_type: this.$route.query.type || 'all',

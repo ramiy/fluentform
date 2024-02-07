@@ -196,6 +196,7 @@ class Entries extends EntryQuery
             'editor_shortcodes'     =>  $submissionShortcodes['shortcodes'],
             'input_labels'          =>  $inputLabels,
             'update_status'         => isset($_REQUEST['update_status']) ? sanitize_text_field($_REQUEST['update_status']) : '',
+            'has_entry_print'       => defined('FLUENTFORM_PDF_VERSION') && version_compare(FLUENTFORM_PDF_VERSION, '1.1.8', '>='),
         ];
     
         $data = apply_filters_deprecated(

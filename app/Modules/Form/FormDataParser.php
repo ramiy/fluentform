@@ -35,7 +35,10 @@ class FormDataParser
 
     public static function parseFormSubmission($submission, $form, $fields, $isHtml = false)
     {
-        if (is_null(static::$data)) {
+        // On bulk entries print, submission will change inside loop. So we need to parse submission everytime
+        $forceParseSubmission = defined('FLUENTFORM_FORCE_PARSE_FORM_SUBMISSION') && FLUENTFORM_FORCE_PARSE_FORM_SUBMISSION;
+
+        if (is_null(static::$data) || $forceParseSubmission) {
             static::$data = static::parseData(
                 json_decode($submission->response),
                 $fields,
