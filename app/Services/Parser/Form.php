@@ -302,13 +302,12 @@ class Form
                 'multi_payment_component',
                 'payment_method',
                 'item_quantity_component',
+                'rangeslider',
                 'payment_coupon',
-	            'subscription_payment_component'
+	            'subscription_payment_component',
         ];
     
-        $data = apply_filters_deprecated(
-            'fluentform_form_payment_fields',
-            [
+        $data = apply_filters_deprecated('fluentform_form_payment_fields', [
                 $data
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
