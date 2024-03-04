@@ -148,7 +148,7 @@
                     'subscription_payment_component'
                 ],
                 showPreventMessage: false,
-                emptyRules: { field: '', value: '', operator: '' }
+                emptyRules: { field: '', value: '', operator: '', numeric_formatter: '' }
             }
         },
         computed: {
@@ -242,6 +242,57 @@
                                         options: options,
                                         field_label: formItem.settings.label
                                     }
+                                }
+                            } else if (formItem.element == 'input_number') {
+                                if (formItem.attributes.name) {
+                                    dependencies[formItem.attributes.name] = {
+                                        options: formItem.options ? this.formatOptions(formItem.options) : null,
+                                        field_label: formItem.settings.label,
+                                    }
+                                    this.editItem.settings.conditional_logics.conditions.map(cond => {
+                                        if (cond.value) {
+                                            cond.numeric_formatter = formItem.settings.numeric_formatter;
+                                            let formatConfig = {};
+                                            if (cond.numeric_formatter) {
+                                                if (cond.numeric_formatter === 'comma_dot_style') {
+                                                    formatConfig = {
+                                                        'decimal': '.',
+                                                        'separator': ',',
+                                                        'precision': 2,
+                                                        'symbol': '',
+                                                    }
+                                                } else if (cond.numeric_formatter === 'dot_comma_style_zero') {
+                                                    formatConfig = {
+                                                        'decimal': '.',
+                                                        'separator': ',',
+                                                        'precision': 0,
+                                                        'symbol': '',
+                                                    }
+                                                } else if (cond.numeric_formatter === 'dot_comma_style') {
+                                                    formatConfig = {
+                                                        'decimal': ',',
+                                                        'separator': '.',
+                                                        'precision': 2,
+                                                        'symbol': '',
+                                                    }
+                                                } else if (cond.numeric_formatter === 'comma_dot_style_zero') {
+                                                    formatConfig = {
+                                                        'decimal': ',',
+                                                        'separator': '.',
+                                                        'precision': 0,
+                                                        'symbol': '',
+                                                    }
+                                                }
+
+                                                const $el = jQuery('.condition-value');
+                                                if ($el.length) {
+                                                    $el.on('blur change', function () {
+                                                        cond.value = currency(cond.value, formatConfig).format();
+                                                    })
+                                                }
+                                            }
+                                        }
+                                    });
                                 }
                             } else {
                                 if (formItem.attributes.name) {
