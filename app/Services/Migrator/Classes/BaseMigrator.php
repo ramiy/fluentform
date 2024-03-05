@@ -20,6 +20,7 @@ abstract class BaseMigrator
     {
         if (!$this->exist()) {
             wp_send_json_error([
+                //translators: %s Target Plugin Name
                 'message' => sprintf(__('%s is not installed.', 'fluentform'), $this->title),
             ]);
         }

@@ -572,7 +572,7 @@ class Menu
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
 
         if (!$form) {
-            echo __('<h2>No form found</h2>', 'fluentform');
+            echo '<h2>'.__('No form found', 'fluentform').'</h2>';
             return;
         }
 

@@ -991,7 +991,8 @@ add_action('enqueue_block_editor_assets', function () {
     wp_enqueue_style(
         'fluentform-gutenberg-block',
         fluentFormMix('css/fluent_gutenblock.css'),
-        ['wp-edit-blocks']
+        ['wp-edit-blocks'],
+        FLUENTFORM_VERSION
     );
     $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
     $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');

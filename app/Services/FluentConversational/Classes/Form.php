@@ -674,7 +674,8 @@ class Form
         ], $form);
 
         if (is_array($isRenderable) && !$isRenderable['status'] && !Acl::hasAnyFormPermission($formId)) {
-            echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
+     
+            echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>".wp_kses_post($isRenderable['message'])."</div>";
             exit(200);
         }
         /* This filter is deprecated and will be removed soon */

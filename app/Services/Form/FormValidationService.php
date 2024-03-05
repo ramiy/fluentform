@@ -309,10 +309,13 @@ class FormValidationService
                     array_intersect_key($this->formData, $fields)
                 );
                 if (!count(Helper::arrayFilterRecursive($filteredFormData))) {
+                    $defaultMessage = __('Sorry! You can\'t submit an empty form.','fluentform');
+                    $customMessage = Arr::get($settings, 'message');
+                    
                     throw new ValidationException('', 422, null,  [
                         'errors' => [
                             'restricted' => [
-                                __(!($m = Arr::get($settings, 'message')) ? 'Sorry! You can\'t submit an empty form.' : $m, 'fluentform'),
+                                !empty($customMessage) ? $customMessage : $defaultMessage,
                             ],
                         ],
                     ]);
