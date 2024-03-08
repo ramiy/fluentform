@@ -426,44 +426,6 @@ $app->addAction('wp_ajax_fluentform-predefined-create', function () use ($app) {
     (new \FluentForm\App\Modules\Form\Predefined($app))->create();
 });
 
-/**
- * Add fluentform_submission_inserted actions for
- * slack and mailchimp if the form was submitted.
- */
-
-// Permission settings
-$app->addAction('wp_ajax_fluentform_get_access_roles', function () {
-    dd('wp_ajax_fluentform_get_access_roles');
-    Acl::verify('fluentform_full_access');
-    $roleManager = new \FluentForm\App\Modules\Acl\RoleManager();
-    $roleManager->getRoles();
-});
-
-$app->addAction('wp_ajax_fluentform_set_access_roles', function () {
-    dd('wp_ajax_fluentform_set_access_roles');
-    Acl::verify('fluentform_full_access');
-    $roleManager = new \FluentForm\App\Modules\Acl\RoleManager();
-    $roleManager->setRoles();
-});
-
-$app->addAction('wp_ajax_fluentform_get_managers', function () {
-    dd('wp_ajax_fluentform_get_managers');
-    Acl::verify('fluentform_full_access');
-    (new \FluentForm\App\Modules\Acl\Managers())->get();
-});
-
-$app->addAction('wp_ajax_fluentform_set_managers', function () {
-    dd('wp_ajax_fluentform_set_managers');
-    Acl::verify('fluentform_full_access');
-    (new \FluentForm\App\Modules\Acl\Managers())->store();
-});
-
-$app->addAction('wp_ajax_fluentform_del_managers', function () {
-    dd('wp_ajax_fluentform_del_managers');
-    Acl::verify('fluentform_full_access');
-    (new \FluentForm\App\Modules\Acl\Managers())->remove();
-});
-
 /*
  * Background Process Receiver
  */

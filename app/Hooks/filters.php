@@ -282,7 +282,7 @@ $app->addFilter('fluentform/disabled_analytics', function ($status) {
 
 // permission based filters
 $app->addFilter('fluentform/permission_callback', function ($status, $permission) {
-    return (new \FluentForm\App\Modules\Acl\RoleManager())->currentUserFormFormCapability();
+    return  \FluentForm\App\Modules\Acl\Acl::getCurrentUserCapability();
 }, 10, 2);
 
 $app->addFilter('fluentform/validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
