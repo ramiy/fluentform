@@ -234,6 +234,150 @@
                             </template>
                         </div>
 
+                        <div class="ff_card_block mt-4" v-if="payment_methods.paddle">
+                            <div class="ff_card_block_head">
+                                <h5>{{ $t('Paddle Settings') }}</h5>
+                            </div>
+
+                            <el-form-item class="ff-form-item" label="">
+                                <template slot="label">
+                                    {{ $t('Paddle Payment') }}
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('You can select which type of payment process can be done through Paddle.') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </template>
+                                <el-radio-group v-model="settings.paddle_transaction_type">
+                                    <el-radio label="non_catalog">{{ $t('Non-catalog') }}</el-radio>
+                                    <el-radio label="catalog">{{ $t('Catalog Item') }}</el-radio>
+                                    <el-radio label="non_catalog_price">
+                                        {{ $t('Non-catalog price for an existing product') }}
+                                    </el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+
+                            <div v-if="settings.paddle_transaction_type == 'catalog'" class="mb-4">
+                                <h6 class="mb-3">{{ $t('Map Catalog Price') }}</h6>
+                                <el-row v-for="(item, index) in settings.paddle_catalog_data" :key="index" :gutter="20" class="mb-4">
+                                    <el-col :span="10">
+                                        <el-form-item class="ff-form-item">
+                                            <template slot="label">
+                                                {{ $t('Select Price') }}
+                                                <el-tooltip class="item" placement="bottom-start"
+                                                            popper-class="ff_tooltip_wrap">
+                                                    <div slot="content">
+                                                        <p> {{ $t('Please select the price') }} </p>
+                                                    </div>
+                                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                                </el-tooltip>
+                                            </template>
+                                            <el-select class="w-100" v-model="item.price_id" clearable filterable
+                                                       :placeholder="$t('Select a price field')">
+                                                <el-option
+                                                    v-for="(item, index) in paddlePrices"
+                                                    :key="index"
+                                                    :label="item"
+                                                    :value="index">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="10">
+                                        <el-form-item class="ff-form-item">
+                                            <template slot="label">
+                                                {{ $t('Select Quantity Field') }}
+                                                <el-tooltip class="item" placement="bottom-start"
+                                                            popper-class="ff_tooltip_wrap">
+                                                    <div slot="content">
+                                                        <p>
+                                                            {{ $t('Please select the quantity field') }}
+                                                        </p>
+                                                    </div>
+                                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                                </el-tooltip>
+                                            </template>
+                                            <el-select class="w-100" v-model="item.quantity" clearable filterable :placeholder="$t('Select quantity field')">
+                                                <el-option
+                                                    v-for="(item, index) in quantityFields"
+                                                    :key="index"
+                                                    :label="item.admin_label"
+                                                    :value="item.attributes.name">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col class="mt-6" :span="4">
+                                        <action-btn>
+                                            <action-btn-add
+                                                @click="addItemAfter(index, 'paddle_catalog_data')"></action-btn-add>
+                                            <action-btn-remove v-if="settings.paddle_catalog_data.length > 1" @click="removeItem(index, 'paddle_catalog_data')"></action-btn-remove>
+                                        </action-btn>
+                                    </el-col>
+                                </el-row>
+                            </div>
+
+                            <div v-if="settings.paddle_transaction_type == 'non_catalog_price'" class="mb-4">
+                                <h6 class="mb-3">{{ $t('Map Product') }}</h6>
+                                <el-row v-for="(item, index) in settings.paddle_non_catalog_price_data" :key="index" :gutter="20" class="mb-4">
+                                    <el-col :span="10">
+                                        <el-form-item class="ff-form-item">
+                                            <template slot="label">
+                                                {{ $t('Select Product') }}
+                                                <el-tooltip class="item" placement="bottom-start"
+                                                            popper-class="ff_tooltip_wrap">
+                                                    <div slot="content">
+                                                        <p> {{ $t('Please select the product') }} </p>
+                                                    </div>
+                                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                                </el-tooltip>
+                                            </template>
+                                            <el-select class="w-100" v-model="item.product_id" clearable filterable :placeholder="$t('Select a product')">
+                                                <el-option
+                                                    v-for="(item, index) in paddleProducts"
+                                                    :key="index"
+                                                    :label="item"
+                                                    :value="index">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="10">
+                                        <el-form-item class="ff-form-item">
+                                            <template slot="label">
+                                                {{ $t('Select payment item') }}
+                                                <el-tooltip class="item" placement="bottom-start"
+                                                            popper-class="ff_tooltip_wrap">
+                                                    <div slot="content">
+                                                        <p>
+                                                            {{ $t('Please select the payment item') }}
+                                                        </p>
+                                                    </div>
+                                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                                </el-tooltip>
+                                            </template>
+                                            <el-select class="w-100" v-model="item.payment_item" clearable filterable :placeholder="$t('Select a payment item')" :valueKey="'name'">
+                                                <el-option
+                                                    v-for="(item, index) in paymentFields"
+                                                    :key="index"
+                                                    :label="item.admin_label"
+                                                    :value="item.attributes.name">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col class="mt-6" :span="4">
+                                        <action-btn>
+                                            <action-btn-add @click="addItemAfter(index, 'paddle_non_catalog_price_data')"></action-btn-add>
+                                            <action-btn-remove v-if="settings.paddle_non_catalog_price_data.length > 1" @click="removeItem(index, 'paddle_non_catalog_price_data')"></action-btn-remove>
+                                        </action-btn>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                        </div>
                         <div class="mt-4">
                             <el-button icon="el-icon-success" :loading="saving" @click="saveSettings()" type="primary">
                                 {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
@@ -253,6 +397,9 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
+    import ActionBtnRemove from "@/admin/components/ActionBtn/ActionBtnRemove.vue";
+    import ActionBtnAdd from "@/admin/components/ActionBtn/ActionBtnAdd.vue";
+    import ActionBtn from "@/admin/components/ActionBtn/ActionBtn.vue";
 
     export default {
         name: 'payment-settings',
@@ -263,7 +410,10 @@
             inputPopover,
             Card,
             CardHead,
-            CardBody
+            CardBody,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {
@@ -280,6 +430,22 @@
                 return _ff.filter(this.inputs, (input) => {
                     return input.attributes.type === 'email';
                 });
+            },
+            paymentFields() {
+                return _ff.filter(this.inputs, (input) => {
+                    return input.element === 'multi_payment_component' || input.element === 'custom_payment_component';
+                });
+            },
+            quantityFields() {
+                return _ff.filter(this.inputs, (input) => {
+                    return input.element === 'item_quantity_component';
+                });
+            },
+            paddlePrices() {
+                return this.settings.paddle_prices;
+            },
+            paddleProducts() {
+                return this.settings.paddle_products;
             }
         },
         methods: {
@@ -320,6 +486,31 @@
                     .always(() => {
                         this.saving = false;
                     });
+            },
+            addItemAfter(index, key) {
+                this.loading = true;
+                if (key == 'paddle_catalog_data') {
+                    this.settings[key].splice(index + 1, 0, {
+                        price_id: '',
+                        quantity: ''
+                    });
+                }
+                if (key == 'paddle_non_catalog_price_data') {
+                    this.settings[key].splice(index + 1, 0, {
+                        product_id: '',
+                        payment_item: ''
+                    });
+                }
+                this.$nextTick(() => {
+                    this.loading = false;
+                });
+            },
+            removeItem(index, key) {
+                this.loading = true;
+                this.settings[key].splice(index, 1);
+                this.$nextTick(() => {
+                    this.loading = false;
+                });
             }
         },
         mounted() {
