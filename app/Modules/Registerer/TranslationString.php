@@ -1299,6 +1299,15 @@ class TranslationString
             'Navigate' => __('Navigate', 'fluentform'),
             'Tab to focus search' => __('Tab to focus search', 'fluentform'),
             'Enter to Select' => __('Enter to Select', 'fluentform'),
+            'Are you sure you want to convert this form?' => __('Are you sure you want to convert this form?', 'fluentform'),
+            'Upgrade to PRO' => __('Upgrade to PRO', 'fluentform'),
+            'Convert to Conversational Form' => __('Convert to Conversational Form', 'fluentform'),
+            'Confirmation' => __('Confirmation', 'fluentform'),
+            'Form Title' => __('Form Title', 'fluentform'),
+            'You want to delete this field?' => __('You want to delete this field?', 'fluentform'),
+            'Yes, Confirm!' => __('Yes, Confirm!', 'fluentform'),
+            'Search name, address, mask input etc.' => __('Search name, address, mask input etc.', 'fluentform'),
+            "Conversational Forms currently doesn't support the following fields: You may also lose data of these fields." => __("Conversational Forms currently doesn't support the following fields: You may also lose data of these fields.", 'fluentform'),
         );
 
         return apply_filters('fluentform/editor_i18n', $i18n);

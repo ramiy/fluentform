@@ -122,6 +122,7 @@ import ContainerWidth from "./templates/containerWidth";
 import inventoryStock from "./templates/inventoryStock";
 import selectGroup from "./templates/selectGroup.vue";
 import CustomSettingsField from "./templates/CustomSettingsField.vue";
+import dynamicFilter from "./templates/dynamicFilter.vue";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -173,6 +174,7 @@ export default {
         ff_containerWidth: ContainerWidth,
         ff_inventoryStock: inventoryStock,
         ff_selectGroup: selectGroup,
+        ff_dynamicFilter: dynamicFilter,
         ff_CustomSettingsField: CustomSettingsField
     },
     data() {

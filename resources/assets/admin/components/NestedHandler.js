@@ -5,6 +5,7 @@ import taxonomy from './templates/taxonomy.vue'
 import chainedSelect from './templates/chainedSelect.vue'
 import ratings from './templates/ratings.vue'
 import netPromoter from './templates/netPromoter.vue'
+import dynamicField from './templates/dynamicField.vue'
 import formStep from './templates/formStep.vue'
 import recaptcha from './templates/recaptcha.vue'
 import hcaptcha from './templates/hcaptcha.vue'
@@ -58,6 +59,7 @@ export default {
         ff_chainedSelect: chainedSelect,
         ff_ratings: ratings,
         ff_net_promoter: netPromoter,
+        ff_dynamic_field: dynamicField,
         ff_formStep: formStep,
         ff_inputFile: inputFile,
         ff_inputText: inputText,
