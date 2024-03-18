@@ -145,6 +145,7 @@
                     'multi_payment_component',
                     'item_quantity_component',
                     'cpt_selection',
+                    'dynamic_field',
                     'subscription_payment_component'
                 ],
                 showPreventMessage: false,
@@ -202,11 +203,14 @@
                                     options: this.formatOptions(window.FluentFormApp.countries),
                                     field_label: formItem.settings.label
                                 };
-                            } else if (['input_radio', 'select', 'input_checkbox'].includes(formItem.element)) {
+                            } else if (['input_radio', 'select', 'input_checkbox', 'dynamic_field'].includes(formItem.element)) {
                                 let options = formItem.options ? this.formatOptions(formItem.options) : null;
                                 if (!options) {
                                     options = formItem.settings.advanced_options;
                                 }
+								if ('text' === formItem.attributes.type) {
+									options = null
+								}
                                 dependencies[formItem.attributes.name] = {
                                     options: options,
                                     field_label: formItem.settings.label

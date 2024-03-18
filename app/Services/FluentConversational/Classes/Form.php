@@ -320,6 +320,7 @@ class Form
             'hcaptcha',
             'turnstile',
             'quiz_score',
+            'dynamic_field',
             'rangeslider'
         ];
 
