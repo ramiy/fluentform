@@ -143,6 +143,7 @@ $elements = [
     'select_country',
     'gdpr_agreement',
     'terms_and_condition',
+    'dynamic_field',
     'multi_payment_component'
 ];
 
@@ -150,6 +151,17 @@ foreach ($elements as $element) {
     $event = 'fluentform/response_render_' . $element;
     $app->addFilter($event, function ($response, $field, $form_id, $isLabel = false) {
         $element = $field['element'];
+
+        if ('dynamic_field' == $element) {
+            $attrType = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.attributes.type');
+            if ('radio' == $attrType) {
+                $element = 'input_radio';
+            } elseif ('checkbox' == $attrType) {
+                $element = 'input_checkbox';
+            } elseif ('select' == $attrType) {
+                $element = 'select';
+            }
+        }
 
         if ('address' == $element && !empty($response->country)) {
             $countryList = getFluentFormCountryList();
