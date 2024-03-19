@@ -33,15 +33,16 @@
 								<span>
 								      {{ $t('Value') }}
 								      <el-tooltip
-									      :content="$t('Select option if you want to be used as value.')"
+									      :content="$t('Choose the option you want to be used as the value')"
 									      placement="top"
 								      >
 								        <i class="ff-icon el-icon-info"></i>
 								      </el-tooltip>
 							    </span>
 							</template>
-							<template slot-scope="scope">
+							<template v-slot="scope">
 								<el-radio
+									:disabled="textValueDisable"
 									v-model="defaultValue"
 									:label="scope.row.value"
 									@change="$emit('close-modal')"
@@ -62,7 +63,7 @@
 								      </el-tooltip>
 								    </span>
 								</template>
-								<template slot-scope="scope">
+								<template v-slot="scope">
 									<el-checkbox
 										v-model="selectedValues"
 										:label="scope.row.value"
@@ -80,7 +81,7 @@
 								      </el-tooltip>
 								    </span>
 								</template>
-								<template slot-scope="scope">
+								<template v-slot="scope">
 									<el-radio
 										v-model="defaultValue"
 										:label="scope.row.value"
@@ -98,7 +99,7 @@
 				</el-table>
 			</div>
 			<div v-else>
-				<p>{{ $t('Empty' + isText ? 'Values' : 'Options') }}</p>
+				<p>{{ $t('Empty ' + (isText ? 'Values' : 'Options')) }}</p>
 			</div>
 		</el-dialog>
 	</div>
@@ -108,7 +109,7 @@
 
 export default {
 	name: 'DynamicFilterOptionsDialog',
-	props: ['visible', 'options', 'dynamic', 'type', 'value'],
+	props: ['visible', 'options', 'dynamic', 'type', 'value', 'textValueDisable'],
 	data() {
 		return {
 			selectedValues: Array.isArray(this.value) ? this.value : []
@@ -159,7 +160,7 @@ export default {
 			return ['multi_select', 'checkbox'].includes(this.type)
 		},
 		description() {
-			let description = this.$t('Valid options by template mapping value');
+			let description = this.$t('Valid options make by template mapping');
 			if ('result' === this.type) {
 				description = this.$t('Result found by filters');
 			} else if (this.isText) {

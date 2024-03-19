@@ -63,6 +63,7 @@
 				</div>
 			</el-form-item>
 
+			<!-- Unique Result -->
 			<el-form-item>
 				<input-yes-no-checkbox
 					v-model="model.unique_result"
@@ -138,6 +139,7 @@
 			<dynamic-filter-options-dialog
 				v-model="editItem.attributes.value"
 				@close-modal="validOptionsDialog=false"
+				:text-value-disable="'yes' === model.dynamic_fetch"
 				:visible="validOptionsDialog"
 				:options="valid_options"
 				:type="editItem.settings.field_type"
@@ -220,6 +222,25 @@
 					</el-col>
 				</el-row>
 			</el-form-item>
+
+			<!-- Dynamic Retrieval -->
+			<el-form-item>
+				<input-yes-no-checkbox
+					v-if="isTextType"
+					v-model="model.dynamic_fetch"
+					:listItem="{
+						label: $t('Dynamic Value Retrieval'),
+						help_text : $t('When checked, value are dynamically fetched based on filters during rendering, and the first valid value is used. Leave unchecked to use the current valid value mapping.')}"
+				></input-yes-no-checkbox>
+
+				<input-yes-no-checkbox
+					v-else
+					v-model="model.dynamic_fetch"
+					:listItem="{
+						label: $t('Dynamic Options Retrieval'),
+						help_text : $t('When checked, options are dynamically fetched based on filters during rendering. If unchecked, the current valid options remain unchanged.')}"
+				></input-yes-no-checkbox>
+			</el-form-item>
 		</div>
 	</div>
 </template>
@@ -258,6 +279,9 @@ export default {
 		}
 	},
 	watch: {
+		'editItem.settings.field_type'() {
+			this.maybeResetTextValue();
+		},
 		'model.type'() {
 			this.getFilterValueOptions();
 		},
@@ -267,9 +291,19 @@ export default {
 				this.getDebounceResult()
 			},
 			deep: true,
+		},
+		valid_options() {
+			this.maybeResetTextValue()
 		}
 	},
 	methods: {
+		maybeResetTextValue(){
+			// Set first valid value for dynamically fetched
+			if (this.isTextType && 'yes' === this.model.dynamic_fetch) {
+				this.editItem.attributes.value = this.valid_options[0]?.value || '';
+			}
+		},
+
 		addFilterGroup() {
 			this.model.filters = [...this.model.filters, [
 				{

@@ -210,6 +210,12 @@ class Converter
                 $question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', null);
                 $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
             } elseif ('dynamic_field' === $field['element']) {
+                $dynamicFetchValue = 'yes' == ArrayHelper::get($field, 'settings.dynamic_config.dynamic_fetch');
+                if ($dynamicFetchValue) {
+                    $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
+                    dd(ArrayHelper::get($field, 'attributes.value'));
+                    $question['answer'] = ArrayHelper::get($field, 'attributes.value');
+                }
                 $type = ArrayHelper::get($field, 'attributes.type');
                 if (in_array($type, ['checkbox', 'radio'])) {
                     $question['type'] = 'FlowFormMultipleChoiceType';
