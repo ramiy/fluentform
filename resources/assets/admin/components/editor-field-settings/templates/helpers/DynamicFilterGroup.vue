@@ -63,6 +63,16 @@
 						</el-col>
 					</el-row>
 				</template>
+				<el-date-picker
+					class="w-100"
+					v-else-if="isDateType"
+					v-model="group['value']"
+					value-format="yyyy-MM-dd HH:mm:ss"
+					:type="dateType"
+					:range-separator="$t('To')"
+					:start-placeholder="$t('Start date')"
+					:end-placeholder="$t('End date')">
+				</el-date-picker>
 				<el-input v-else v-model="group['value']"></el-input>
 			</el-col>
 		</el-row>
@@ -77,18 +87,26 @@
 import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
 import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
 import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
+import debounce from 'lodash/debounce';
 
 export default {
 	name: 'DynamicFilterGroup',
-	props: ['addAndText', 'listItem', 'filterColumns', 'group', 'filter_value_options'],
+	props: ['addAndText', 'listItem', 'filterColumns', 'group', 'filter_value_options', 'groupsIndex'],
 	data() {
 		return {
-			custom_value: String(this.group.value)
+			custom_value: String(this.group.value),
+			form_fields_key : `form_fields_${this.groupsIndex}`
 		}
 	},
 	watch: {
 		'custom_value'() {
 			this.group.value = this.custom_value;
+		},
+		'group.value'() {
+			this.getDebounceFormFields();
+		},
+		'group.column'() {
+			this.getDebounceFormFields();
 		}
 	},
 	components: {
@@ -97,6 +115,34 @@ export default {
 		ActionBtnRemove,
 	},
 	methods: {
+		getDebounceFormFields: debounce(function () {
+			this.maybeGetFormFields();
+		}, 2 * 1000),
+
+		maybeGetFormFields() {
+			if ('fluentform_submissions.form_id' !== this.group.column) {
+				return;
+			}
+			let formId = this.group.value;
+			if (Array.isArray(formId)) {
+				formId = formId[0];
+			}
+			if (formId) {
+				FluentFormsGlobal.$get({
+						action: 'fluentform-get-dynamic-filter-form-fields',
+						form_id: formId
+					})
+					.done(res => {
+						if (res.data.options) {
+							this.$emit('update-filter-value-options', this.form_fields_key, res.data.options)
+						}
+					})
+					.fail(error => {
+					})
+					.always(() => {
+					});
+			}
+		},
 		toggleCustom() {
 			this.group.custom = !this.group.custom;
 			this.resetValue();
@@ -114,6 +160,22 @@ export default {
 	computed: {
 		operators() {
 			let operators = { ...this.listItem.operators };
+			if (this.isDateType) {
+				for (const key in operators) {
+					if (!(['>', '>=', '<', '<=', 'BETWEEN', 'NOT BETWEEN'].includes(key))) {
+						delete operators[key];
+					}
+				}
+				return operators;
+			}
+
+			if ('is_favourite' === this.group.column) {
+				return {
+					'=' : operators['='],
+					'!=' : operators['!='],
+				};
+			}
+
 			if (!this.listItem.numeric_columns.includes(this.group.column)) {
 				for (const key in operators) {
 					if (['>', '>=', '<', '<='].includes(key)) {
@@ -121,12 +183,27 @@ export default {
 					}
 				}
 			}
+			delete operators['BETWEEN'];
+			delete operators['NOT BETWEEN'];
 			return operators;
+		},
+		isDateType() {
+			return this.listItem.date_columns?.includes(this.group.column)
+		},
+		dateType() {
+			if (['BETWEEN', 'NOT BETWEEN'].includes(this.group.operator)) {
+				return 'daterange';
+			}
+			return 'date';
 		},
 		filterValueOptions() {
 			let options = false;
 			if (this.group.column) {
-				options = this.filter_value_options[this.group.column];
+				let key = this.group.column;
+				if ('field_name' === key) {
+					key = this.form_fields_key;
+				}
+				options = this.filter_value_options[key];
 			}
 			return options;
 		},
@@ -138,6 +215,11 @@ export default {
 		},
 		isCustom() {
 			return this.group.custom;
+		}
+	},
+	mounted() {
+		if ('fluentform_submissions.form_id' === this.group.column) {
+			this.maybeGetFormFields();
 		}
 	}
 }

@@ -42,7 +42,8 @@ import {
     OptionGroup,
     Link,
     Table,
-    TableColumn
+    TableColumn,
+    DatePicker
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -91,6 +92,7 @@ Vue.use(OptionGroup);
 Vue.use(Link);
 Vue.use(Table);
 Vue.use(TableColumn);
+Vue.use(DatePicker);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;

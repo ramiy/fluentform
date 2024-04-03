@@ -43,12 +43,14 @@
 							<dynamic-filter-group
 								v-for="(group, groupIndex) in groups" :key="'group_' + groupsIndex + groupIndex"
 								:group="group"
+								:groupsIndex="groupsIndex"
 								:add-and-text="groupIndex !== 0"
 								:list-item="listItem"
 								:filter-columns="filterColumns"
 								:filter_value_options="filter_value_options"
 								@add-group="addFilter(groupsIndex, groupIndex)"
 								@remove-group="removeFilter(groupsIndex, groupIndex)"
+								@update-filter-value-options="updateFilterValueOptions"
 							></dynamic-filter-group>
 						</div>
 					</div>
@@ -304,6 +306,10 @@ export default {
 			}
 		},
 
+		updateFilterValueOptions(key, options){
+			this.filter_value_options = {...this.filter_value_options, [key] : options};
+		},
+
 		addFilterGroup() {
 			this.model.filters = [...this.model.filters, [
 				{
@@ -337,7 +343,7 @@ export default {
 					type: this.model.type
 				})
 				.done(res => {
-					this.filter_value_options = res.data.options;
+					this.filter_value_options = {...this.filter_value_options, ...res.data.options };
 					if (!onMounted) {
 						this.model.filters = res.data.default_config.filters || [];
 						this.model.sort_by = res.data.default_config.sort_by || '';
