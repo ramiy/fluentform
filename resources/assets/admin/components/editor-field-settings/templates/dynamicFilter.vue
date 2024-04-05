@@ -106,6 +106,20 @@
 				</el-row>
 			</el-form-item>
 
+			<!-- Result Limits -->
+			<el-form-item>
+				<elLabel
+					slot="label"
+					:label="$t('Result Limits')"
+					:help-text="$t('Specify the result limits')"
+				></elLabel>
+				<el-row :gutter="20">
+					<el-col :span="24">
+						<el-input type="number" v-model="model.result_limit"></el-input>
+					</el-col>
+				</el-row>
+			</el-form-item>
+
 			<!-- Filter Result -->
 			<el-form-item>
 				<el-row :gutter="20" type="flex" align="middle">
@@ -348,6 +362,7 @@ export default {
 						this.model.filters = res.data.default_config.filters || [];
 						this.model.sort_by = res.data.default_config.sort_by || '';
 						this.model.order_by = res.data.default_config.order_by || '';
+						this.model.result_limit = res.data.default_config.result_limit || 500;
 						this.model.template_value = res.data.default_config.template_value || '';
 						this.model.template_label = res.data.default_config.template_label || '';
 					}
