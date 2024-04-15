@@ -22,7 +22,7 @@
 							:prop="column.prop"
 							:label="$t(column.label)"
 							:key="column.prop"
-							min-width="150"
+							:min-width="i === 0 ? '80' : '150'"
 							:fixed="i === 0"
 						></el-table-column>
 					</template>

@@ -91,7 +91,7 @@ import debounce from 'lodash/debounce';
 
 export default {
 	name: 'DynamicFilterGroup',
-	props: ['addAndText', 'listItem', 'filterColumns', 'group', 'filter_value_options', 'groupsIndex'],
+	props: ['addAndText', 'listItem', 'filterColumns', 'group', 'filter_value_options', 'groupsIndex', 'groups'],
 	data() {
 		return {
 			custom_value: String(this.group.value),
@@ -106,6 +106,7 @@ export default {
 			this.getDebounceFormFields();
 		},
 		'group.column'() {
+			this.group.operator = Object.keys(this.operators)[0];
 			this.getDebounceFormFields();
 		}
 	},
@@ -119,7 +120,7 @@ export default {
 			this.maybeGetFormFields();
 		}, 2 * 1000),
 
-		maybeGetFormFields() {
+		maybeGetFormFields(mounted = false) {
 			if ('fluentform_submissions.form_id' !== this.group.column) {
 				return;
 			}
@@ -134,13 +135,21 @@ export default {
 					})
 					.done(res => {
 						if (res.data.options) {
-							this.$emit('update-filter-value-options', this.form_fields_key, res.data.options)
+							this.$emit('update-filter-value-options', this.form_fields_key, res.data.options);
 						}
 					})
 					.fail(error => {
 					})
 					.always(() => {
 					});
+			}
+			if (!mounted) {
+				let nameField = this.groups.find(g => g.column === 'field_name');
+				if (nameField && ['IN', 'NOT IN'].includes(nameField.operator)) {
+					nameField.value = [];
+				} else {
+					nameField.value = '';
+				}
 			}
 		},
 		toggleCustom() {
@@ -219,7 +228,7 @@ export default {
 	},
 	mounted() {
 		if ('fluentform_submissions.form_id' === this.group.column) {
-			this.maybeGetFormFields();
+			this.maybeGetFormFields(true);
 		}
 	}
 }

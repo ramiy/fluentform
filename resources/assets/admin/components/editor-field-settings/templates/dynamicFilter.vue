@@ -43,6 +43,7 @@
 							<dynamic-filter-group
 								v-for="(group, groupIndex) in groups" :key="'group_' + groupsIndex + groupIndex"
 								:group="group"
+								:groups="groups"
 								:groupsIndex="groupsIndex"
 								:add-and-text="groupIndex !== 0"
 								:list-item="listItem"
