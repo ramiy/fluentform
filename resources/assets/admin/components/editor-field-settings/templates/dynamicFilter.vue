@@ -421,7 +421,10 @@ export default {
 		templateColumnsOptions() {
 			let options = {};
 			if (this.all_options && this.all_options[0]) {
-				for (const prop in this.all_options[0]) {
+				for (let prop in this.all_options[0]) {
+					if ('field_name' === prop) {
+						prop = 'inputs.' + prop;
+					}
 					options[`{${ prop }}`] = _ff.startCase(prop)
 				}
 			}
