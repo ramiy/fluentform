@@ -1,6 +1,6 @@
 <template>
 <div class="post_meta_plugins_mappings">
-    <div class="meta_fields_mapping_head">
+    <div class="meta_fields_mapping_head" v-if="labels.section_title">
         <h6>{{ labels.section_title }}</h6>
     </div>
     <div class="meta_fields_mapping_head no_border">

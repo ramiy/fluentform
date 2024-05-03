@@ -301,6 +301,18 @@
                                     </wp_editor>
                                 </template>
 
+	                            <template v-else-if="field.component == 'meta_plugin_mapping'">
+                                    <post-meta-plugin-mapping
+                                        :general_settings="settings[field.key].general"
+                                        :advanced_settings="settings[field.key].advanced"
+                                        :general_fields="field.fields.general"
+                                        :advanced_fields="field.fields.advanced"
+                                        :form_fields="inputs"
+                                        :editorShortcodes="editorShortcodes"
+                                        :labels="field.labels"
+                                    ></post-meta-plugin-mapping>
+	                            </template>
+
                                 <template v-else>
                                     <p>{{
                                             $t('No Template found. Please make sure you are using latest version of Fluent Forms')
@@ -356,10 +368,12 @@
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
     import wpEditor from '@/common/_wp_editor';
+    import PostMetaPluginMapping from '@/admin/components/settings/_PostMetaPluginsMapping';
 
     export default {
         name: 'general_notification_edit',
         components: {
+	        PostMetaPluginMapping,
             SelectionRouting,
             ErrorView,
             inputPopover,
