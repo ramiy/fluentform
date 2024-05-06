@@ -3,7 +3,10 @@
 namespace FluentForm\App\Http\Controllers;
 
 use Exception;
+use FluentForm\App\Models\Form;
 use FluentForm\App\Services\Form\FormService;
+use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Support\Collection;
 
 class FormController extends Controller
 {
@@ -171,4 +174,26 @@ class FormController extends Controller
     {
         return ['message' => 'pong'];
     }
+    
+    public function gptForm(FormService $formService)
+    {
+    
+        try {
+            $form = $formService->createFromGPT($this->request->all());
+        
+            return $this->sendSuccess([
+                'formId'       => $form->id,
+                'redirect_url' => admin_url(
+                    'admin.php?page=fluent_forms&form_id=' . $form->id . '&route=editor'
+                ),
+                'message' => __('Successfully created a form.', 'fluentform'),
+            ]);
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+        
+    }
+    
 }

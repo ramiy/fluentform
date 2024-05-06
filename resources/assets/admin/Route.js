@@ -20,6 +20,7 @@ class Route {
     getForms = "forms";
     storeForms = this.getForms;
     getTemplates = this.getForms + "/templates";
+    gptForm = this.getForms + "/gptForm";
 
 
     findForm = this.getForms + "/{param}";

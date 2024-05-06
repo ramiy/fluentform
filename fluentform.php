@@ -1,16 +1,17 @@
-<?php defined('ABSPATH') or die;
+<?php
+defined('ABSPATH') or die;
 
 /**
  * Plugin Name: Fluent Forms
  * Description: Contact Form By Fluent Forms is the advanced Contact form plugin with drag and drop, multi column supported form builder plugin
- * Version: 5.1.15
+ * Version: 5.1.14
  * Author: Contact Form - WPManageNinja LLC
  * Author URI: https://fluentforms.com
  * Plugin URI: https://wpmanageninja.com/wp-fluent-form/
  * License: GPLv2 or later
  * Text Domain: fluentform
  * Domain Path: /resources/languages
-*/
+ */
 
 defined('ABSPATH') or die;
 
@@ -19,14 +20,26 @@ define('FLUENTFORM_DIR_PATH', plugin_dir_path(__FILE__));
 
 define('FLUENTFORM_FRAMEWORK_UPGRADE', '4.3.22');
 
-defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '5.1.15');
+defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '5.1.14');
 
 if (!defined('FLUENTFORM_HAS_NIA')) {
     define('FLUENTFORM_HAS_NIA', true);
 }
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
-call_user_func(function($bootstrap) {
+call_user_func(function ($bootstrap) {
     $bootstrap(__FILE__);
-}, require(__DIR__.'/boot/app.php'));
+}, require(__DIR__ . '/boot/app.php'));
+
+
+//$test = \FluentForm\App\Models\Submission::select('*');
+//
+//$test->whereHas('entryDetails', function ($query) {
+//    $query->where('field_name', 'post_title');
+//})->with('entryDetails');
+//
+//
+//dd($test->get()->toArray());
+
+

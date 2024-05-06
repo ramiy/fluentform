@@ -35,6 +35,24 @@
                                     <el-skeleton-item variant="text" style="width: 60%; margin-top: 10px;" />
                                 </template>
                                 <template>
+                                    <card class="ff_card_form_action ff_card_shadow_lg hover-zoom"  @click="showChatGPT" :img="blankFormImg" imgClass="mb-3">
+                                        <card-body>
+                                            <h6 class="mb-2 ff_card_title">{{$t('Chat GPT')}}</h6>
+                                            <p class="ff_card_text">{{$t('Create a New Blank form from scratch.')}}</p>
+                                        </card-body>
+                                    </card>
+                                </template>
+                            </el-skeleton>
+                        </el-col>
+
+                        <el-col :sm="has_post_feature ? 6 : 8">
+                            <el-skeleton :loading="loading" animated class="h-100">
+                                <template slot="template">
+                                    <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
+                                    <el-skeleton-item variant="h3" style="width: 80%;"/>
+                                    <el-skeleton-item variant="text" style="width: 60%; margin-top: 10px;" />
+                                </template>
+                                <template>
                                     <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" v-loading="creatingForm && creatingFormType === 'blank_form'" @click="createForm('blank_form')" :img="blankFormImg" imgClass="mb-3">
                                         <card-body>
                                             <h6 class="mb-2 ff_card_title">{{$t('New Blank Form')}}</h6>
@@ -116,6 +134,9 @@
             :hasPro="has_pro"
         />
 
+        <ChatGPTModal :visibility.sync="showChatGPTModal"/>
+
+
     </div>
 </template>
 
@@ -123,6 +144,7 @@
     import Card from '../Card/Card.vue';
     import CardBody from '../Card/CardBody.vue';
     import ChooseTemplateModal from './ChooseTemplateModal.vue';
+    import ChatGPTModal from './ChatGPTModal.vue';
     import PostTypeSelectionModal from './PostTypeSelectionModal.vue';
     import ImportForms from '@/admin/transfer/ImportForms';
 
@@ -133,13 +155,16 @@
             CardBody,
             ChooseTemplateModal,
             PostTypeSelectionModal,
-            ImportForms
+            ImportForms,
+            ChatGPTModal
         },
         props: {
             visibility: Boolean
         },
         data() {
             return {
+                innerVisible: false,
+                chatQuery: '',
                 has_post_feature: !!window.FluentFormApp.has_post_feature,
                 postFormData: {
                     type: 'post',
@@ -158,6 +183,7 @@
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
                 postTypeFormImg:  window.FluentFormApp.plugin_public_url + 'img/post-type-form.png',
                 showChooseTemplateModal: false,
+                showChatGPTModal: false,
                 postTypeSelectionDialogVisibility: false,
                 showFormsImport : false,
                 formsImported : false,
@@ -166,6 +192,10 @@
             }
         },
         methods: {
+            chatGptModal(){
+                console.log('x')
+                this.showChat = true;
+            },
             getPredefinedForms() {
                 this.loading = true;
 
@@ -188,6 +218,10 @@
             },
             showChooseTemplate(){
                 this.showChooseTemplateModal = true;
+                this.$emit('update:visibility', false);
+            },
+            showChatGPT(){
+                this.showChatGPTModal = true;
                 this.$emit('update:visibility', false);
             },
             showPostType(){

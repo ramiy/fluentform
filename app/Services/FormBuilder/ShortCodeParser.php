@@ -140,7 +140,7 @@ class ShortCodeParser
             } elseif (false !== strpos($matches[1], 'payment.')) {
                 $property = substr($matches[1], strlen('payment.'));
                 $deprecatedValue = apply_filters_deprecated(
-                    'fluentform_payment_smartcode', [
+                    'fluentf    orm_payment_smartcode', [
                         '',
                         $property,
                         self::getInstance()

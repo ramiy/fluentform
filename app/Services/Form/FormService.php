@@ -6,6 +6,7 @@ use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\Framework\Foundation\App;
+use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
@@ -87,7 +88,7 @@ class FormService
             $form->title = $form->title . ' (#' . $form->id . ')';
 
             $form->save();
-
+            dd($form);
             $formMeta = FormMeta::prepare($attributes, $predefinedForm);
 
             FormMeta::store($form, $formMeta);
@@ -706,5 +707,126 @@ class FormService
             }
         }
         return $ids;
+    }
+    
+    public function createFromGPT($req)
+    {
+        $startingQuery = "Create a form for ";
+        $query = \FluentForm\Framework\Support\Sanitizer::sanitizeTextField(Arr::get($req,'query'));
+        
+        $additionalQuery = \FluentForm\Framework\Support\Sanitizer::sanitizeTextField(Arr::get($req,'additional_query'));
+        if($additionalQuery){
+            $query .= " including questions for ".$additionalQuery;
+        }
+        $query .= " \nreturn as json fluentform format and code only, don't include text in response";
+        $args = [
+            "role"    => 'system',
+            "content" => $startingQuery.$query,
+        ];
+        $token = ArrayHelper::get(get_option('_fluentform_openai_settings'), 'access_token');
+    
+//        $result = (new \FluentFormPro\classes\Chat\ChatFieldController(wpFluentForm()))->makeRequest($token, $args);
+        
+        $response = trim(ArrayHelper::get($result, 'choices.0.message.content'), '"');
+        $response = json_decode($response,true);
+        if (is_wp_error($result)) {
+            wp_send_json_error('Failed', 422);
+        }
+//        $response = [
+//            "title" => "Job Interview Form",
+//            "description" => "Please fill out the following information for the job interview.",
+//            "fields" => [
+//                [
+//                    "id" => "name",
+//                    "type" => "text",
+//                    "label" => "Full Name",
+//                    "required" => 1
+//                ],
+//            ]
+//        ];
+    
+        $fields = Arr::get($response, 'fields');
+        $selectedInputKeys = [];
+        $formattedInputs = [];
+    
+        foreach ($fields as $field) {
+            if ($inputKey = $this->resolveInput($field)) {
+                $selectedInputKeys[] = $inputKey;
+            }
+        }
+    
+        $components = $this->app->make('components');
+        $allFields = array_merge($components->toArray()['general'], $components->toArray()['advanced']);
+    
+        foreach ($selectedInputKeys as $key =>$val) {
+            if (isset($allFields[$key])) {
+                $label = ArrayHelper::get($val,'label');
+                $required = ArrayHelper::isTrue($val,'required');
+                $matchedField = $allFields[$key];
+                $matchedField['uniqElKey'] = "el_".uniqid();
+                if($label){
+                    if(isset($matchedField['settings']['label'])){
+                        $matchedField['settings']['label'] = $label;
+                    }elseif (isset($matchedField['fields'])){
+                        $subFields = $matchedField['fields'];
+                        $subNames = explode($label);
+                        if(count($subNames) > 1){
+                            $counter = 0;
+                            foreach ($subFields as $subFieldkey => $subFieldValue){
+                                
+                                if(isset($subFieldValue['settings']['label']) && ArrayHelper::get($subNames,$counter)){
+                                        $subFields[$subFieldkey]['settings']['label'] = ArrayHelper::get($subNames,$counter);
+                                        $counter++;
+                                }
+                                
+                            }
+                        }
+                        $matchedField['fields'] = $subFields ;
+                       
+                    }
+                }
+                $formattedInputs[] = $matchedField;
+            }
+        }
+    
+        $attributes = [
+            'type'       => 'form',
+            'predefined' => 'blank_form'
+        ];
+    
+        $customForm = Form::resolvePredefinedForm($attributes);
+        $customForm['form_fields'] = json_decode($customForm['form_fields'], true);
+        $submitButton = $customForm['form']['submitButton'];
+        
+        $customForm['form_fields']['fields'] = $formattedInputs;
+        $customForm['form_fields']['submitButton'] = $submitButton;
+    
+        $customForm['form_fields'] = json_encode($customForm['form_fields']);
+        $data = Form::prepare($customForm);
+        $form = $this->model->create($data);
+        $form->title = $response['title'] ?? $form->title . ' (testing#' . $form->id . ')';
+        $form->save();
+    
+        $formMeta = FormMeta::prepare($attributes, $customForm);
+        FormMeta::store($form, $formMeta);
+    
+        do_action('fluentform/inserted_new_form', $form->id, $data);
+    
+        return $form;
+        
+    }
+    
+    private function resolveInput($field)
+    {
+        $type = Arr::get($field,'type');
+        $searchTags = fluentformLoadFile('Services/FormBuilder/ElementSearchTags.php');
+        
+        foreach ($searchTags as $inputKey => $tags ){
+            
+            if( array_search($type,$tags) !== false){
+                return $inputKey;
+            }
+        }
+        return  false;
     }
 }
