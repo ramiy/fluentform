@@ -22,10 +22,10 @@
 
     <div v-if="fieldType == 'textarea'" class="input-textarea-value">
         <i class="icon el-icon-tickets" v-popover:input-popover></i>
-        <el-input :rows="rows" :placeholder="placeholder" type="textarea" v-model="model"></el-input>
+        <el-input :rows="rows" :placeholder="placeholder" type="textarea" ref="inputField"  @blur="setCursorIndex" v-model="model"></el-input>
     </div>
 
-    <el-input :placeholder="placeholder" v-else v-model="model" :type="fieldType">
+    <el-input :placeholder="placeholder" v-else v-model="model" :type="fieldType" ref="inputField" @blur="setCursorIndex">
         <el-button slot="append" :icon="icon" v-popover:input-popover></el-button>
     </el-input>
 </div>
@@ -65,10 +65,29 @@ export default {
             default: 2
         }
     },
+	data() {
+		return {
+			cursorIndex: 0
+		}
+	},
     methods: {
         insertShortcode(codeString) {
-            this.model += codeString.replace(/param_name/, this.attrName);
-        }
+			let replaceValue = codeString.replace(/param_name/, this.attrName);
+			// add shortcode on cursor index
+			if (!isNaN(this.cursorIndex) && this.cursorIndex < this.model.length) {
+				this.model = this.model.slice(0, this.cursorIndex) + replaceValue + this.model.slice(this.cursorIndex);
+				this.cursorIndex += replaceValue.length;
+			} else {
+				this.model += replaceValue;
+			}
+        },
+	    setCursorIndex() {
+			let input = 'input';
+			if (this.fieldType === 'textarea') {
+				input = 'textarea';
+			}
+		    this.cursorIndex = this.$refs.inputField?.$refs[input]?.selectionStart;
+	    }
     },
     computed : {
 		model : {
