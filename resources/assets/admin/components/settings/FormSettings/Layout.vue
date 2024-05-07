@@ -257,6 +257,7 @@
                     {{
                         $t("These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom.")
                     }}
+	                {{ $t("Use") }} <code>{labels.current_field}</code>{{$t("shortcode for automatically resolve the field label.")}}
                 </p>
             </card-head>
             <card-body>

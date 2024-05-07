@@ -8,6 +8,7 @@ use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Services\FormBuilder\Components\SelectCountry;
+use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Helpers\Traits\GlobalDefaultMessages;
 
@@ -1035,5 +1036,24 @@ class Helper
         ];
 
         return apply_filters('fluentform/white_listed_fields', $whiteListedFields, $formId);
+    }
+
+    /**
+     * Shortcode parse on validation message
+     * @param string $message
+     * @param object $form
+     * @param string $fieldName
+     * @return string
+     */
+    public static function shortCodeParseOnValidationMessage($message, $form, $fieldName)
+    {
+        // For validation message there is no entry & form data
+        // Add 'current_field' name as data array to resolve {labels.current_field} shortcode if it has
+        return ShortCodeParser::parse(
+            $message,
+            (object)['response' => "", 'form_id' => $form->id],
+            ['current_field' => $fieldName],
+            $form
+        );
     }
 }

@@ -261,7 +261,14 @@ class ShortCodeParser
                 ['admin_label', 'attributes', 'options', 'raw', 'label']
             );
         }
-        $inputLabel = ArrayHelper::get(static::$formFields[$key], 'label', '');
+
+        // Resolve global validation messages {labels.current_field} shortcode.
+        // Current field name attribute was setted as inputs data key 'current_field'.
+        if ('current_field' === $key && $currentFieldName = ArrayHelper::get(static::$store['inputs'], $key)) {
+            $currentFieldName = str_replace(['[', ']'], ['.', ''], $currentFieldName);
+            $key = $currentFieldName;
+        }
+        $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $key, []), 'label', '');
         $inputLabel = str_replace(['[', ']'], '', $inputLabel);
         $keys = explode(".", $key);
         if (count($keys) > 1) {
@@ -269,7 +276,7 @@ class ShortCodeParser
             $inputLabel = str_replace($parentKey, '', $inputLabel);
         }
         if(empty($inputLabel)){
-            $inputLabel = ArrayHelper::get(static::$formFields[$key], 'admin_label', '');
+            $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $key, []), 'admin_label', '');
         }
         return $inputLabel;
     }

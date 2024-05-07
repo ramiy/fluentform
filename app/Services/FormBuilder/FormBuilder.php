@@ -447,6 +447,8 @@ class FormBuilder
                     if (isset($rule['global']) && $rule['global']) {
                         $rule['message'] = apply_filters('fluentform/get_global_message_' . $ruleName, $rule['message']);
                     }
+                    // Shortcode parse on validation message
+                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $this->form, ArrayHelper::get($item, 'attributes.name'));
                     $rules[$ruleName]['message'] = apply_filters_deprecated(
                         'fluentform_validation_message_' . $ruleName,
                         [
