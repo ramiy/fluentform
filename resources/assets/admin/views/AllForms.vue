@@ -158,6 +158,7 @@
                                                 active-value="published"
                                                 inactive-value="unpublished"
                                                 v-model="scope.row.status"
+                                                v-loading="changingStatus[scope.row.id] ==true"
                                             />
 
                                         </template>
@@ -391,20 +392,20 @@ export default {
             sort_by: 'DESC',
             formLocations: {},
             loadingLocations: false,
-            radioOption: 'all'
+            radioOption: 'all',
+            changingStatus: {},
+
         }
     },
     methods: {
         toggleStatus(id, title, status) {
-            this.loading = true;
-
             let data = {
                 title,
                 status,
             };
+            this.$set(this.changingStatus, id, true);
 
             const url = FluentFormsGlobal.$rest.route('updateForm', id);
-
             FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
                     this.$success(response.message);
@@ -413,7 +414,7 @@ export default {
                     this.$fail(error.message);
                 })
                 .finally(() => {
-                    this.loading = false;
+                    this.changingStatus[id] = false;
                 });
         },
         goToPage(val) {

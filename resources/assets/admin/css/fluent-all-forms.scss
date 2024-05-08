@@ -132,5 +132,10 @@ small {
         transition: 0.2s all;
         left: 0;
         opacity: 0;
+        .el-loading-spinner .circular {
+            height: 17px;
+            width: 17px;
+            margin-top: 14px;
+        }
     }
 }
