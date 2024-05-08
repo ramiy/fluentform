@@ -5,9 +5,8 @@ namespace FluentForm\App\Services\Report;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\EntryDetails;
 use FluentForm\App\Models\Submission;
-use FluentForm\App\Modules\Entries\Entries;
 use FluentForm\App\Modules\Form\FormFieldsParser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class ReportHelper
@@ -249,10 +248,10 @@ class ReportHelper
         if (!$unmigratedData) {
             return Helper::setFormMeta($formId, 'report_data_migrated', 'yes');
         }
-        $entries = new Entries();
+        $submissionService = new SubmissionService();
         foreach ($unmigratedData as $datum) {
             $value = json_decode($datum->response, true);
-            $entries->recordEntryDetails($datum->id, $formId, $value);
+            $submissionService->recordEntryDetails($datum->id, $formId, $value);
         }
         return true;
     }

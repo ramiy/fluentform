@@ -551,17 +551,7 @@ class SubmissionService
     
     public function recordEntryDetails($entryId, $formId, $data)
     {
-        $formData = Arr::except($data, [
-            '__fluent_form_embded_post_id',
-            '_fluentform_' . $formId . '_fluentformnonce',
-            '_wp_http_referer',
-            'g-recaptcha-response',
-            'h-captcha-response',
-            'cf-turnstile-response',
-            '__stripe_payment_method_id',
-            '__ff_all_applied_coupons',
-            '__entry_intermediate_hash',
-        ]);
+        $formData = Arr::except($data, Helper::getWhiteListedFields($formId));
         
         $entryItems = [];
         foreach ($formData as $dataKey => $dataValue) {

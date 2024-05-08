@@ -5,12 +5,12 @@ namespace FluentForm\App\Modules\Form;
 use FluentForm\App\Databases\Migrations\SubmissionDetails;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Activator;
-use FluentForm\App\Modules\Entries\Entries;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
 use FluentForm\App\Services\Browser\Browser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
+use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -172,8 +172,8 @@ class FormHandler
     {
         if ($insertId) {
             ob_start();
-            $entries = new Entries();
-            $entries->recordEntryDetails($insertId, $form->id, $formData);
+            $submissionService = new SubmissionService();
+            $submissionService->recordEntryDetails($insertId, $form->id, $formData);
             $isError = ob_get_clean();
             if ($isError) {
                 SubmissionDetails::migrate();

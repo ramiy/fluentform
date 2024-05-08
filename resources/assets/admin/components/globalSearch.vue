@@ -19,7 +19,7 @@
 			                ref="links" v-for="(link, i) in filteredLinks"
 			                :key="'link_' + i"
 			                tabindex='1'
-			                @keyup.enter="goToSlug($event, link.item || link)"
+			                :class="{'active-search-link' : linkFocusIndex === i}"
 			                @click="goToSlug($event, link.item || link)"
 		                >
 			                <span>{{ link.item?.title || link.title }}</span>
@@ -168,6 +168,14 @@ export default {
 					e.preventDefault();
 					this.$refs.searchInput?.focus();
 					this.linkFocusIndex = 0;
+				} else if (e.keyCode === 13) {
+					// Enter press
+					if (this.filteredLinks.length) {
+						const link = this.filteredLinks[this.linkFocusIndex];
+						if (link) {
+							this.goToSlug(undefined, link.item || link);
+						}
+					}
 				}
 			}
 		},
@@ -178,7 +186,7 @@ export default {
 				} else {
 					this.linkFocusIndex += 1;
 				}
-				if (this.linkFocusIndex > this.filteredLinks.length || this.linkFocusIndex <= 0) {
+				if (this.linkFocusIndex >= this.filteredLinks.length || this.linkFocusIndex <= 0) {
 					this.$refs.searchInput?.focus();
 					this.$refs.searchBody?.scroll?.({top:0});
 					this.linkFocusIndex = 0;

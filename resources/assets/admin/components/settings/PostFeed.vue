@@ -37,7 +37,7 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('For post update only one feed is avaiable, if you have more than one feed the first one will work.') }}
+                                            {{ $t('For post update only one feed is available, if you have more than one feed the first one will work.') }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -219,6 +219,22 @@
                             }"
                                 :general_fields="post_settings.acf_fields"
                                 :advanced_fields="post_settings.acf_fields_advanced"
+                                :form_fields="form_fields"
+                                :editorShortcodes="editorShortcodes" />
+                                <hr class="mt-4 mb-4">
+                        </template>
+
+	                    <template v-if="post_settings.has_jetengine">
+                            <post-meta-plugin-mapping
+                                :general_settings="feed.value.jetengine_mappings"
+                                :advanced_settings="feed.value.advanced_jetengine_mappings"
+                                :labels="{
+                                section_title: $t('Jetengine Meta Mapping'),
+                                remote_label: $t('Jetengine Field'),
+                                local_label: $t('Form Field (Value)')
+                            }"
+                                :general_fields="post_settings.jetengine_fields"
+                                :advanced_fields="post_settings.jetengine_fields_advanced"
                                 :form_fields="form_fields"
                                 :editorShortcodes="editorShortcodes" />
                                 <hr class="mt-4 mb-4">

@@ -626,6 +626,54 @@
                     </card-body>
                 </card>
 
+                <!-- per step save data for conversation form -->
+                <card v-if="is_conversion_form && hasConvFormSaveAndResume" id="conv_form_per_step_save">
+                    <card-head>
+                        <card-head-group>
+                            <h5 class="title">{{ $t('Conversational Form Per Step Save') }}</h5>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('If you enable this setting than this conversational form per step data will be saved') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary ml-1"></i>
+                            </el-tooltip>
+                        </card-head-group>
+                    </card-head>
+                    <card-body class="el-form--label-top">
+                        <div v-if="hasPro">
+                            <div class="el-form-item ff-form-item ff-form-item-flex">
+                                <label class="el-form-item__label" style="width: 390px;">
+                                    {{ $t('Enable per step save') }}
+                                </label>
+                                <div class="el-form-item__content">
+                                    <el-switch class="el-switch-lg" v-model="formSettings.conv_form_per_step_save" v-if="hasPro"/>
+                                </div>
+                            </div>
+                            <transition name="slide-down">
+                                <div v-if="formSettings.conv_form_per_step_save" class="el-form-item ff-form-item ff-form-item-flex">
+                                    <label class="el-form-item__label" style="width: 390px;">
+                                        {{ $t('Resume from last step') }}
+                                    </label>
+                                    <div class="el-form-item__content">
+                                        <el-switch class="el-switch-lg" v-model="formSettings.conv_form_resume_from_last_step" v-if="hasPro"/>
+                                    </div>
+                                </div>
+                            </transition>
+                        </div>
+                        <notice class="ff_alert_between" type="danger-soft" v-else>
+                            <div>
+                                <h6 class="title">{{$t('Conversation Form Per Step Save is available in the pro version')}}</h6>
+                                <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
+                            </div>
+                            <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+                                {{$t('Upgrade to Pro')}}
+                            </a>
+                        </notice>
+                    </card-body>
+                </card>
+
                 <div>
                     <el-button
                         :loading="loading"
@@ -737,6 +785,10 @@
                 double_optin: false,
                 affiliate_wp: false,
                 admin_approval : false,
+                is_conversion_form: !!window.FluentFormApp.is_conversion_form,
+                conv_form_per_step_save: false,
+                conv_form_resume_from_last_step: false,
+                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume
             }
         },
         computed: {

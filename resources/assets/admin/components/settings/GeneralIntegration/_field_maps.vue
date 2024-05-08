@@ -121,7 +121,7 @@
         },
         mounted() {
             if (Array.isArray(this.merge_model) || !this.merge_model) {
-                this.merge_model = {};
+                this.$emit('merge-model');
             }
             this.appReady = true;
         }

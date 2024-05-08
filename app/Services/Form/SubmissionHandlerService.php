@@ -58,7 +58,19 @@ class SubmissionHandlerService
         if (!$this->form) {
             throw new ValidationException('', 422, null, ['errors' => 'Sorry, No corresponding form found']);
         }
-        
+
+        /**
+         * Filtering empty array inputs to normalize
+         *
+         * For unchecked checkable type, the name filled with empty value
+         * by serialized on the client-side JavaScript. This adjustment ensures filter empty array inputs to normalize- Ex: [''] -> []
+         */
+        foreach ($formDataRaw as $name => $input) {
+            if (is_array($input)) {
+                $formDataRaw[$name] = array_filter($input);
+            }
+        }
+
         // Parse the form and get the flat inputs with validations.
         $this->fields = FormFieldsParser::getEssentialInputs($this->form, $formDataRaw, ['rules', 'raw']);
     
@@ -335,18 +347,29 @@ class SubmissionHandlerService
                 if (strpos($redirectUrl, '&') || '=' == substr($redirectUrl, -1) || $encodeUrl) {
                     $urlArray = explode('?', $redirectUrl);
                     $baseUrl = array_shift($urlArray);
-                    
-                    $query = wp_parse_url($redirectUrl)['query'];
+
+                    $parsedUrl = wp_parse_url($redirectUrl);
+                    $query = Arr::get($parsedUrl, 'query', '');
                     $queryParams = explode('&', $query);
                     
                     $params = [];
                     foreach ($queryParams as $queryParam) {
                         $paramArray = explode('=', $queryParam);
                         if (!empty($paramArray[1])) {
-                            $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            if (strpos($paramArray[1], '%') === false) {
+                                $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            } else {
+                                // Param string is URL-encoded
+                                $params[$paramArray[0]] = $paramArray[1];
+                            }
                         }
                     }
-                    $redirectUrl = add_query_arg($params, $baseUrl);
+                    if ($params) {
+                        $redirectUrl = add_query_arg($params, $baseUrl);
+                        if ($fragment = Arr::get($parsedUrl, 'fragment')) {
+                            $redirectUrl .= '#' . $fragment;
+                        }
+                    }
                 }
             }
             

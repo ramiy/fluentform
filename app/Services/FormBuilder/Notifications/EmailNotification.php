@@ -166,6 +166,7 @@ class EmailNotification
                 }
             }, 10, 1);
         }
+
         $sendAddresses =  apply_filters_deprecated(
             'fluentform_email_to',
             [
@@ -178,8 +179,11 @@ class EmailNotification
             'fluentform/email_to',
             'Use fluentform/email_to instead of fluentform_email_to.'
         );
-        $emailTo = apply_filters('fluentform/email_to', $sendAddresses, $notification, $submittedData, $form);
 
+        $emailTo = apply_filters('fluentform/email_to', $sendAddresses, $notification, $submittedData, $form);
+        if (is_array($emailTo)) {
+            $emailTo = implode(', ', $emailTo);
+        }
         do_action('fluentform/log_data', [
             'parent_source_id' => $form->id,
             'source_type'      => 'submission_item',
@@ -187,7 +191,7 @@ class EmailNotification
             'component'        => 'EmailNotification',
             'status'           => 'info',
             'title'            => 'Email sending initiated',
-            'description'      => 'Email Notification broadcasted to ' . $sendAddresses . ".<br />Subject: {$subject}",
+            'description'      => 'Email Notification broadcasted to ' . $emailTo . ".<br />Subject: {$subject}",
         ]);
 
         return $this->broadCast([
@@ -241,10 +245,15 @@ class EmailNotification
         $routings = ArrayHelper::get($notification, 'sendTo.routing');
         $validAddresses = [];
         foreach ($routings as $routing) {
-            $inputValue = ArrayHelper::get($routing, 'input_value');
-            if (! $inputValue || ! is_email($inputValue)) {
+            $emailAddresses = ArrayHelper::get($routing, 'input_value');
+    
+            if (!$emailAddresses || trim($emailAddresses) === '') {
                 continue;
             }
+            $emailAddresses = array_map('trim', explode(',', $emailAddresses));
+            $emailAddresses = array_filter($emailAddresses, function($email) {
+                return is_email($email);
+            });
             $condition = [
                 'conditionals' => [
                     'status'     => true,
@@ -255,7 +264,7 @@ class EmailNotification
                 ],
             ];
             if (\FluentForm\App\Services\ConditionAssesor::evaluate($condition, $submittedData)) {
-                $validAddresses[] = $inputValue;
+                $validAddresses = array_merge($validAddresses, $emailAddresses);
             }
         }
         return implode(',', $validAddresses);

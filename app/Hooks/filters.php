@@ -346,6 +346,15 @@ $app->addFilter(
                 ]
             ];
         }
+
+        if (!isset($defaultSettings['conv_form_per_step_save'])) {
+            $defaultSettings['conv_form_per_step_save'] = false;
+        }
+
+        if (!isset($defaultSettings['conv_form_resume_from_last_step'])) {
+            $defaultSettings['conv_form_resume_from_last_step'] = false;
+        }
+
         return $defaultSettings;
     }
 );

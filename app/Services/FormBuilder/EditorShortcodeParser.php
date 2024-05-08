@@ -220,10 +220,11 @@ class EditorShortcodeParser
                 $metaKey = substr($prop, strlen('meta.'));
                 $userId = $user->ID;
                 $data = get_user_meta($userId, $metaKey, true);
-                if (! is_array($data)) {
+                $data = maybe_unserialize($data);
+                if (!is_array($data)) {
                     return $data;
                 }
-                return '';
+                return implode(',', $data);
             }
 
             return $user->{$prop};

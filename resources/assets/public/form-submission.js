@@ -146,8 +146,35 @@ jQuery(document).ready(function () {
 
                         validate($inputs);
 
+                        // Serialize form data
+                        var inputsData = $inputs.serializeArray();
+                        // data names array
+                        var inputsDataNames = inputsData.map(item => item.name);
+
+                        // Ignore chekbox and radio which one inside table like checkable-grid, net-promoter-score etc
+                        $inputs = $inputs.filter(function () {
+                            return !$(this).closest('.ff-el-input--content').find('table').length;
+                        });
+                        // Keep track of checkbox and radio groups that have been processed
+                        var processedGroups = {};
+                        // Add empty value for unchecked checkboxes and radio buttons
+                        $inputs.each(function() {
+                            var name = $(this).attr('name');
+                            if (!inputsDataNames.includes(name)) {
+                                if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                                    if (!processedGroups[name] && !$theForm.find('input[name="' + name + '"]:checked').length) {
+                                        inputsData.push({ name, value: '' });
+                                        processedGroups[name] = true;
+                                    }
+                                }
+                            }
+                        });
+                        // Convert inputsData array to serialized string
+                        var serializedData = $.param($.map(inputsData, function(input) {
+                            return { name: input.name, value: input.value };
+                        }));
                         var formData = {
-                            data: $inputs.serialize(),
+                            data: serializedData,
                             action: 'fluentform_submit',
                             form_id: $theForm.data('form_id')
                         };
@@ -1005,10 +1032,8 @@ jQuery(document).ready(function () {
                     },
                 };
 
-                $('input[data-mask]').each(function (key, el) {
-                    var el = $(el),
-                        mask = el.data('mask'),
-                        maskStr = mask.mask;
+                jQuery('input[data-mask]').each(function (key, el) {
+                    var el = jQuery(el), mask = el.attr('data-mask');
 
                     let options = globalOptions;
                     if (el.attr('data-mask-reverse')) {
@@ -1017,8 +1042,11 @@ jQuery(document).ready(function () {
                     if (el.attr('data-clear-if-not-match')) {
                         options.clearIfNotMatch = true;
                     }
-                    el.mask(maskStr, options);
-                });
+
+                    if (mask) {
+                        el.mask(mask, options);
+                    }
+                })
             },
 
             initCheckableActive: function () {

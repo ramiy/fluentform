@@ -105,6 +105,21 @@ class SettingsService
             FormMeta::remove($formId, 'auto_delete_days');
         }
 
+        $convFormPerStepSave = Arr::get($formSettings, 'conv_form_per_step_save') && Helper::isConversionForm($formId);
+
+        if ($convFormPerStepSave) {
+            FormMeta::persist($formId, 'conv_form_per_step_save', true);
+        } else {
+            FormMeta::remove($formId, 'conv_form_per_step_save');
+        }
+
+        $convFormResumeFromLastStep = $convFormPerStepSave && Arr::get($formSettings, 'conv_form_resume_from_last_step');
+        if ($convFormResumeFromLastStep) {
+            FormMeta::persist($formId, 'conv_form_resume_from_last_step', true);
+        } else {
+            FormMeta::remove($formId, 'conv_form_resume_from_last_step');
+        }
+
         do_action_deprecated(
             'fluentform_after_save_form_settings',
             [
@@ -167,6 +182,7 @@ class SettingsService
             'url'                        => 'sanitize_url',
             'webhook'                    => 'sanitize_url',
             'textTitle'                  => 'sanitize_text_field',
+            'conv_form_per_step_save'    => 'rest_sanitize_boolean'
         ];
 
         return fluentform_backend_sanitizer($settings, $sanitizerMap);
@@ -254,6 +270,7 @@ class SettingsService
         $metaKey = "ffc_form_settings";
         $formId = intval($formId);
 
+        $attributes = fluentFormSanitizer($attributes);
         $settings = Arr::get($attributes, 'design_settings');
         FormMeta::persist($formId, $metaKey . '_design', $settings);
 

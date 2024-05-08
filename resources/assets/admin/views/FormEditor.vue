@@ -739,7 +739,7 @@ export default {
                 return false;
             }
 
-            let isCaptchaExists = this.isCaptchaExists(captchas, item.element);
+            let isCaptchaExists = type != 'existingElement' && this.isCaptchaExists(captchas, item.element);
 
             if (isCaptchaExists) {
                 return;

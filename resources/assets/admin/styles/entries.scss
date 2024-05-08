@@ -84,6 +84,9 @@ table.editor_table, .ff_entry_table_field, .ff-table {
     padding: 0px 7px;
     background: whitesmoke;
   }
+  .action-buttons-group {
+    display: flex;
+  }
 }
 
 .ff-payment-table {

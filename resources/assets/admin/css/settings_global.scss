@@ -1265,4 +1265,17 @@ span + .ff_payment_badge{
   }
 }
 
+// integration editor chained field css
+.ff_chained_filter {
+  .el-row {
+    .wpf_each_filter {
+      margin-bottom: 18px;
+
+      label {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+
 @import "../styles/responsive";

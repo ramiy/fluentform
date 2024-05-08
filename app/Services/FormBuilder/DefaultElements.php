@@ -13,7 +13,6 @@ $defaultElements = [
                 'container_class'    => '',
                 'admin_field_label'  => 'Name',
                 'conditional_logics' => [],
-                'label_placement'    => 'top',
             ],
             'fields' => [
                 'first_name' => [
@@ -32,6 +31,33 @@ $defaultElements = [
                         'label'            => __('First Name', 'fluentform'),
                         'help_message'     => '',
                         'visible'          => true,
+                        'label_placement'   => 'top',
+                        'label_placement_options'   => [
+                            [
+                                'value' => '',
+                                'label' => __('Default', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'top',
+                                'label' => __('Top', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'right',
+                                'label' => __('Right', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'bottom',
+                                'label' => __('Bottom', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'left',
+                                'label' => __('Left', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'hide_label',
+                                'label' => __('Hidden', 'fluentform'),
+                            ],
+                        ],
                         'validation_rules' => [
                             'required' => [
                                 'value'   => false,
@@ -63,6 +89,33 @@ $defaultElements = [
                         'label'            => __('Middle Name', 'fluentform'),
                         'help_message'     => '',
                         'error_message'    => '',
+                        'label_placement'   => 'top',
+                        'label_placement_options'   => [
+                            [
+                                'value' => '',
+                                'label' => __('Default', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'top',
+                                'label' => __('Top', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'right',
+                                'label' => __('Right', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'bottom',
+                                'label' => __('Bottom', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'left',
+                                'label' => __('Left', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'hide_label',
+                                'label' => __('Hidden', 'fluentform'),
+                            ],
+                        ],
                         'visible'          => false,
                         'validation_rules' => [
                             'required' => [
@@ -95,6 +148,33 @@ $defaultElements = [
                         'label'            => __('Last Name', 'fluentform'),
                         'help_message'     => '',
                         'error_message'    => '',
+                        'label_placement'   => 'top',
+                        'label_placement_options'   => [
+                            [
+                                'value' => '',
+                                'label' => __('Default', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'top',
+                                'label' => __('Top', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'right',
+                                'label' => __('Right', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'bottom',
+                                'label' => __('Bottom', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'left',
+                                'label' => __('Left', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'hide_label',
+                                'label' => __('Hidden', 'fluentform'),
+                            ],
+                        ],
                         'visible'          => true,
                         'validation_rules' => [
                             'required' => [

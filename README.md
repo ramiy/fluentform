@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.4.2
+Tested up to: 6.5.2
 Requires PHP: 7.4
-Stable tag: 5.1.9
+Stable tag: 5.1.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,50 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.1.16 (Date: May 6, 2024) =
+- Fix editor vulnerability for attacker with contributor level access (Wordpress version 6.4.0)
+- Fix conversational design settings sanitization & escaping
+- Fix conversational form save and resume preview form
+- Fix conversational form conditional based calculation field error
+
+- = 5.1.15 (Date: April 25, 2024) =
+- Fix nested condition
+- Fix entry action for post feed
+
+= 5.1.14 (Date: April 19, 2024) =
+- Improves conversational form sanitization & escaping
+
+= 5.1.13 (Date: April 18, 2024) =
+- Fix Conversational Form ShortCode Rendering
+
+= 5.1.12 (Date: April 18, 2024) =
+- Adds Name Field on conversational form
+- Adds label shortcode
+- Improved container action UI
+- Fixes mask input on Elementor popup
+- Fixes coupon skip button text on conversational form
+- Fixes query string email symbol encode on redirect URL
+- Fixes redirect URL params with anchor
+- Fixes checkbox and radio smart UI keyboard tab navigation
+- Fixes name fields individual label placement
+- Fixes checkbox & radio field issue with condition
+
+= 5.1.11 (Date: February 26, 2024) =
+- Fixes URL escaping bug
+
+= 5.1.10 (Date: February 26, 2024) =
+- Adds turnstile captcha for conversational form
+- Improves turnstile with appearance modes
+- Fixes Inventory Module hiding empty stock
+- Fixes url escaping issue of form redirect
+- Fixes sanitization issue for html supported fields
+- Fixes Entry Export with user submission IP
+- Fixes PDF feed watermark image
+- Fixes Name Field aria-required attribute
+- Fixes PDF Feeds on duplicate form
+- Fixes Numeric min max Field Bug
+
 = 5.1.9 (Date: January 23, 2024) =
 - Update Custom html field sanitization
 - Improves server side conditional settings validation
@@ -460,6 +504,11 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 - Fix CC/BCC email on Email Notification Routing
 - Fix Sync visual report order with form fields order
 - Fixed nested conditional field
+
+= 5.1.6 (Date: December 2, 2023) =
+- Fixes Paypal custom payment issue
+- Fixes personality quiz conversational issue
+- Fixes Notion multi select
 
 = 5.1.5 (Date: November 23, 2023) =
 - Fixes max length validation

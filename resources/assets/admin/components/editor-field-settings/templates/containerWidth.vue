@@ -57,7 +57,7 @@
         methods: {
             set(value, index) {
                 value = this.getNumber(value);
-                
+
                 if (value < 10) {
                     return;
                 }
@@ -76,11 +76,20 @@
 
                 editingColumn.width = value;
                 this.columns[index].width = value;
+                this.checkIfModified()
+            },
+            checkIfModified(){
+                const perColumnWidth = this.getNumber(100 / this.editItem.columns.length);
+                this.editItem.modified = false;
+                this.editItem.columns.forEach(column => {
+                    if ( column.width != perColumnWidth ){
+                        this.editItem.modified = true;
+                    }
+                })
             },
 
             getNumber(value) {
                 value = value || 0;
-
                 return +(Math.round(value + "e+2")  + "e-2");
             }
         }
