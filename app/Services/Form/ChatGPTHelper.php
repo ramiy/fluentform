@@ -15,14 +15,13 @@ class ChatGPTHelper extends FormService
         $allFields = $this->getDefaultFields();
         $fluentFormFields = [];
         $fields = $form['fields'];
-        $test= [];
+        
         foreach ($fields as $field) {
             if ($inputKey = $this->resolveInput($field)) {
-                $test[$inputKey] =$field;
                 $fluentFormFields[] = $this->processField($inputKey, $field, $allFields);
             }
         }
-    
+        $fluentFormFields = $this->maybeAddPayments($fluentFormFields,$allFields);
         $title = $form['title'] ?? '';
         return $this->saveForm($fluentFormFields, $title);
     }
@@ -43,7 +42,8 @@ class ChatGPTHelper extends FormService
         }
         $query .= " \n return as json fluentform format and code only,
                     don't include text in response, declare inside fields array,if payment key included add a field type with payment key,
-                    use type key as field type and form title as title key";
+                    use type key as field type and form title as title key
+                    ";
         $args = [
             "role"    => 'system',
             "content" => $startingQuery . $query,
@@ -54,46 +54,8 @@ class ChatGPTHelper extends FormService
         $response = trim(ArrayHelper::get($result, 'choices.0.message.content'), '"');
         $response = json_decode($response, true);
 
-//        $response = [
-//            "title"       => "T-shirt Registration Form",
-//            "description" => "Please fill out the following information to register for a T-shirt.",
-//            "fields"      => [
-//                [
-//                    "id"       => "name",
-//                    "type"     => "text",
-//                    "label"    => "Full Name",
-//                    "required" => true
-//                ],
-//                [
-//                    "id"       => "email",
-//                    "type"     => "email",
-//                    "label"    => "Email",
-//                    "required" => true
-//                ],
-//                [
-//                    "id"       => "phone",
-//                    "type"     => "tel",
-//                    "label"    => "Phone Number",
-//                    "required" => true
-//                ],
-//                [
-//                    "id"       => "size",
-//                    "type"     => "select",
-//                    "label"    => "T-shirt Size",
-//                    "required" => true,
-//                    "options"  => ["S" => "Small", "M" => "Medium", "L" => "Large", "XL" => "Extra Large"]
-//                ],
-//                [
-//                    "id"       => "color",
-//                    "type"     => "select",
-//                    "label"    => "T-shirt Color",
-//                    "required" => true,
-//                    "options"  => ["red" => "Red", "blue" => "Blue", "green" => "Green", "black" => "Black"]
-//                ]
-//            ]
-//        ];
         if (is_wp_error($response) || empty($response['fields'])) {
-            wp_send_json_error('Failed', 422);
+            wp_send_json_error('Failed :'.json_encode($response), 422);
         }
         
         return $response;
@@ -102,6 +64,7 @@ class ChatGPTHelper extends FormService
     protected function getDefaultFields()
     {
         $components = $this->components('');
+        //todo remove disabled elements
         $disabledComponents = $this->getDisabledComponents();
         return array_merge($components['general'], $components['advanced'],$components['payments']);
     }
@@ -132,7 +95,7 @@ class ChatGPTHelper extends FormService
                 }
             } elseif (isset($matchedField['fields'])) {
                 $subFields = $matchedField['fields'];
-                $subNames = explode($label);
+                $subNames = explode(" ",$label);
                 if (count($subNames) > 1) {
                     $counter = 0;
                     foreach ($subFields as $subFieldkey => $subFieldValue) {
@@ -219,6 +182,30 @@ class ChatGPTHelper extends FormService
         
         do_action('fluentform/inserted_new_form', $form->id, $data);
         return $form;
+    }
+    
+    protected function maybeAddPayments($fluentFormFields,$allFields)
+    {
+        $paymentElements = ['payment_method','multi_payment_component'];
+        $foundElements = [];
+        if(empty($fluentFormFields)){
+            return  [];
+        }
+        foreach ($fluentFormFields as $item) {
+            if ( in_array($item["element"],$paymentElements)) {
+                $foundElements[] = $item["element"];
+            }
+        }
+        // Find the elements in $paymentElements that are not in $foundElements
+        $remainingElements = array_diff($paymentElements, $foundElements);
+        $formPaymentElm = [];
+        if(!empty($remainingElements)){
+            foreach ($remainingElements as $elmKey){
+                $formPaymentElm[] = $this->getElementByType($allFields,$elmKey);
+            }
+        }
+      
+        return array_merge($fluentFormFields,$formPaymentElm);
     }
     
 }
