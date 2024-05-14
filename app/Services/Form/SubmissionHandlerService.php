@@ -192,7 +192,6 @@ class SubmissionHandlerService
                 SubmissionDetails::migrate();
             }
         }
-        $returnData = $this->getReturnData($insertId, $form, $formData);
         $error = '';
         try {
             do_action('fluentform_submission_inserted', $insertId, $formData, $form);
@@ -240,7 +239,7 @@ class SubmissionHandlerService
     
         return [
             'insert_id' => $insertId,
-            'result'    => $returnData,
+            'result'    => $this->getReturnData($insertId, $form, $formData),
             'error'     => $error,
         ];
     }
