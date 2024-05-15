@@ -14,7 +14,6 @@ class ChatGPTHelper extends FormService
         $allFields = $this->getDefaultFields();
         $fluentFormFields = [];
         $fields = Arr::get($form, 'fields', []);
-        
         foreach ($fields as $field) {
             if ($inputKey = $this->resolveInput($field)) {
                 $fluentFormFields[] = $this->processField($inputKey, $field, $allFields);
@@ -48,6 +47,7 @@ class ChatGPTHelper extends FormService
         \nIf has field like full name, first name, last name, field key type will be 'name'. If has field like phone, field key type will be 'phone'.
         \nIf has field like payment, field key type will be 'payment'.
         \nAdd 'title' key to define the form title.
+        \nIgnore my previous chat history.
         \nReturn the form data in JSON format, adhering to FluentForm's structure. Only include the form fields inside the 'fields' array.";
 
         $args = [
@@ -61,7 +61,7 @@ class ChatGPTHelper extends FormService
         $response = json_decode($response, true);
 
         if (is_wp_error($response) || empty($response['fields'])) {
-            wp_send_json_error('Failed :'.json_encode($response), 422);
+            wp_send_json_error('Failed : Please try again! :'.json_encode($response), 422);
         }
         
         return $response;
@@ -233,8 +233,9 @@ class ChatGPTHelper extends FormService
             foreach ($remainingElements as $elmKey) {
                 $formPaymentElm[] = $this->getElementByType($allFields, $elmKey);
             }
+            return array_merge($fluentFormFields, $formPaymentElm);
         }
-        return array_merge($fluentFormFields, $formPaymentElm);
+        return $fluentFormFields;
     }
     
 }
