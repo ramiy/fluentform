@@ -72,6 +72,9 @@ class ChatGPTHelper extends FormService
         $components = $this->components('');
         //todo remove disabled elements
         $disabledComponents = $this->getDisabledComponents();
+        if(!(isset($components['payments']))){
+            $components['payments'] = [];
+        }
         return array_merge($components['general'], $components['advanced'],$components['payments']);
     }
     
