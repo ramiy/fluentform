@@ -791,7 +791,7 @@ jQuery(document).ready(function () {
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
                         el.closest('.ff-el-input--content').find('div.error').remove();
-                        el.closest('.ff-el-input--content').append(div.text(message));
+                        el.closest('.ff-el-input--content').append(div.html(message));
                     } else {
                         el.find('div.error').remove();
                         el.append(div.text(message));
