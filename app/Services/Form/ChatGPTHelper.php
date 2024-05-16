@@ -43,9 +43,12 @@ class ChatGPTHelper extends FormService
 //                    use type key as field type and form title as title key
 //                    ";
 
-        $query .= "\nField includes 'type', 'name', 'label', 'placeholder', 'required' status, 'options' if has options will be format 'label' 'value' pair.
+        $query .= "\nField includes 'type', 'name', 'label', 'placeholder', 'required' status. 
+        \nIf field has 'options', it will be format 'value' 'label' pair.
         \nIf has field like full name, first name, last name, field key type will be 'name'. If has field like phone, field key type will be 'phone'.
         \nIf has field like payment, field key type will be 'payment'.
+        \nIf has field like rating, review, feedback, star, field key type will be 'ratings' and include options as label value pair.
+        \nIf has field like slider, range, scale, field key type will be 'range' and include min and max value as property of field array.
         \nAdd 'title' key to define the form title.
         \nIgnore my previous chat history.
         \nReturn the form data in JSON format, adhering to FluentForm's structure. Only include the form fields inside the 'fields' array.";
@@ -75,7 +78,7 @@ class ChatGPTHelper extends FormService
         if(!(isset($components['payments']))){
             $components['payments'] = [];
         }
-        return array_merge($components['general'], $components['advanced'],$components['payments']);
+        return array_merge(Arr::get($components, 'general', []), Arr::get($components, 'advanced', []), Arr::get($components, 'payments', []));
     }
     
     public  function getElementByType($allFields, $type) {
@@ -91,6 +94,11 @@ class ChatGPTHelper extends FormService
     {
         $matchedField = $this->getElementByType($allFields, $inputKey);
         $matchedField['uniqElKey'] = "el_" . uniqid();
+        $matchedFieldType = Arr::get($matchedField, 'element');
+
+        if ($fieldName = Arr::get($field, 'name')) {
+            $matchedField['attributes']['name'] = $fieldName;
+        }
 
         if ($label = Arr::get($field, 'label')) {
             $required = Arr::isTrue($field, 'required');
@@ -135,6 +143,18 @@ class ChatGPTHelper extends FormService
         if ($options = $this->getOptions(Arr::get($field, 'options'))) {
             if (isset($matchedField['settings']['advanced_options'])) {
                 $matchedField['settings']['advanced_options'] = $options;
+            }
+            if ('ratings' == $matchedFieldType) {
+                $matchedField['options'] = array_column($options, 'label', 'value');
+            }
+        }
+
+        if ('rangeslider' == $matchedFieldType) {
+            if ($min = Arr::get($field, 'min')) {
+                $matchedField['attributes']['min'] = intval($min);
+            }
+            if ($max = intval(Arr::get($field, 'max', 10))) {
+                $matchedField['attributes']['max'] = $max;
             }
         }
         
