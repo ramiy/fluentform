@@ -798,13 +798,15 @@ jQuery(document).ready(function () {
                     }
 
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                        var $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
-                        var siteKey = $el.data('sitekey');
-                        var id = $el.attr('id');
-                        const turnstileWidgetId = turnstile.render(document.getElementById(id), {
-                            'sitekey': siteKey
+                        window.turnstile.ready(function () {
+                            var $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
+                            var siteKey = $el.data('sitekey');
+                            var id = $el.attr('id');
+                            const turnstileWidgetId = turnstile.render(document.getElementById(id), {
+                                'sitekey': siteKey
+                            });
+                            $el.attr('data-turnstile_widget_id', turnstileWidgetId);
                         });
-                        $el.attr('data-turnstile_widget_id', turnstileWidgetId);
                     }
 
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
@@ -875,13 +877,15 @@ jQuery(document).ready(function () {
                     }
 
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                        let $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
-                        let siteKey = $el.data('sitekey');
-                        let id = $el.attr('id');
-                        // const turnstileWidgetId = turnstile.render(document.getElementById(id), {
-                        //     'sitekey': siteKey
-                        // });
-                        // $el.attr('data-turnstile_widget_id', turnstileWidgetId);
+                        window.turnstile.ready(function () {
+                            let $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
+                            let siteKey = $el.data('sitekey');
+                            let id = $el.attr('id');
+                            const turnstileWidgetId = turnstile.render(document.getElementById(id), {
+                                'sitekey': siteKey
+                            });
+                            $el.attr('data-turnstile_widget_id', turnstileWidgetId);
+                        });
                     }
 
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
@@ -1412,9 +1416,6 @@ jQuery(document).ready(function () {
             }
             formInstance.reinitExtras();
 
-            if (window.hcaptcha) {
-                hcaptcha.reset(); //two recapthca on same page creates conflicts
-            }
             initSingleForm($theForm);
             fluentFormCommonActions.init();
             $theForm.attr('data-ff_reinit', 'yes');

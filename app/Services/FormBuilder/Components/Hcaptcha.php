@@ -41,7 +41,7 @@ class Hcaptcha extends BaseComponent
         if (!wp_script_is('hcaptcha')) {
             wp_enqueue_script(
                 'hcaptcha',
-                'https://js.hcaptcha.com/1/api.js',
+                'https://js.hcaptcha.com/1/api.js?render=explicit',
                 [],
                 FLUENTFORM_VERSION,
                 true
