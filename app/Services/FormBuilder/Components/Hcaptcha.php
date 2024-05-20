@@ -38,17 +38,19 @@ class Hcaptcha extends BaseComponent
             return false;
         }
 
-        wp_enqueue_script(
-            'hcaptcha',
-            'https://js.hcaptcha.com/1/api.js',
-            [],
-            FLUENTFORM_VERSION,
-            true
-        );
+        if (!wp_script_is('hcaptcha')) {
+            wp_enqueue_script(
+                'hcaptcha',
+                'https://js.hcaptcha.com/1/api.js',
+                [],
+                FLUENTFORM_VERSION,
+                true
+            );
+        }
 
         $hcaptchaBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
-		id='fluentform-hcaptcha-{$form->id}'
+		id='fluentform-hcaptcha-{$form->id}-{$form->instance_index}'
 		class='ff-el-hcaptcha h-captcha'></div>";
 
         $label = '';

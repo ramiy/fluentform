@@ -46,13 +46,15 @@ class Recaptcha extends BaseComponent
         }
 
         if ('v3_invisible' == $apiVersion) {
-            wp_enqueue_script(
-                'google-recaptcha',
-                'https://www.google.com/recaptcha/api.js?render=' . $siteKey,
-                [],
-                FLUENTFORM_VERSION,
-                true
-            );
+            if (!wp_script_is('google-recaptcha')) {
+                wp_enqueue_script(
+                    'google-recaptcha',
+                    'https://www.google.com/recaptcha/api.js?render=' . $siteKey,
+                    [],
+                    FLUENTFORM_VERSION,
+                    true
+                );
+            }
 
             add_filter('fluentform/form_class', function ($formClass) {
                 $formClass .= ' ff_has_v3_recptcha';
@@ -67,17 +69,19 @@ class Recaptcha extends BaseComponent
             return;
         }
 
-        wp_enqueue_script(
-            'google-recaptcha',
-            'https://www.google.com/recaptcha/api.js',
-            [],
-            FLUENTFORM_VERSION,
-            true
-        );
+        if (!wp_script_is('google-recaptcha')) {
+            wp_enqueue_script(
+                'google-recaptcha',
+                'https://www.google.com/recaptcha/api.js?render=explicit',
+                [],
+                FLUENTFORM_VERSION,
+                true
+            );
+        }
 
         $recaptchaBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
-		id='fluentform-recaptcha-" . $form->id . "'
+		id='fluentform-recaptcha-{$form->id}-{$form->instance_index}'
 		class='ff-el-recaptcha g-recaptcha'
 		data-callback='fluentFormrecaptchaSuccessCallback'></div>";
 

@@ -41,13 +41,15 @@ class Turnstile extends BaseComponent
             return $atts;
         });
 
-        wp_enqueue_script(
-            'turnstile',
-            'https://challenges.cloudflare.com/turnstile/v0/api.js',
-            [],
-            FLUENTFORM_VERSION,
-            true
-        );
+        if (!wp_script_is('turnstile')) {
+            wp_enqueue_script(
+                'turnstile',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js',
+                [],
+                FLUENTFORM_VERSION,
+                true
+            );
+        }
 
         $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
 
@@ -58,7 +60,7 @@ class Turnstile extends BaseComponent
         $turnstileBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
 		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
-		id='fluentform-turnstile-{$form->id}'
+		id='fluentform-turnstile-{$form->id}-{$form->instance_index}'
 		class='ff-el-turnstile cf-turnstile'
 		data-appearance='" . $appearance . "'></div>";
 
