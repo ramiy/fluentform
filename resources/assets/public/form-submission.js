@@ -858,7 +858,43 @@ jQuery(document).ready(function () {
                     $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
                         $('.ff-el-pop-content').remove();
                     });
+                    renderCaptchas();
                 };
+
+                let renderCaptchas = function () {
+                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
+                        window.grecaptcha.ready(function () {
+                            let $el = $theForm.find('.ff-el-recaptcha.g-recaptcha');
+                            let siteKey = $el.data('sitekey');
+                            let id = $el.attr('id');
+                            const grecaptchaWidgetId = grecaptcha.render(document.getElementById(id), {
+                                'sitekey': siteKey
+                            });
+                            $el.attr('data-grecaptcha_widget_id', grecaptchaWidgetId);
+                        });
+                    }
+
+                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
+                        let $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
+                        let siteKey = $el.data('sitekey');
+                        let id = $el.attr('id');
+                        // const turnstileWidgetId = turnstile.render(document.getElementById(id), {
+                        //     'sitekey': siteKey
+                        // });
+                        // $el.attr('data-turnstile_widget_id', turnstileWidgetId);
+                    }
+
+                    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
+                        let $el = $theForm.find('.ff-el-hcaptcha.h-captcha');
+                        let siteKey = $el.data('sitekey');
+                        let id = $el.attr('id');
+                        const hcaptchaWidgetId = hcaptcha.render(document.getElementById(id), {
+                            'sitekey': siteKey
+                        });
+                        $el.attr('data-hcaptcha_widget_id', hcaptchaWidgetId);
+                    }
+
+                }
 
                 var addGlobalValidator = function (key, callback) {
                     globalValidators[key] = callback;
@@ -1401,35 +1437,5 @@ jQuery(document).ready(function () {
 });
 
 jQuery(document.body).on('fluentform_init', function (e, $theForm) {
-    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
-        window.grecaptcha.ready(function () {
-            var $el = $theForm.find('.ff-el-recaptcha.g-recaptcha');
-            var siteKey = $el.data('sitekey');
-            var id = $el.attr('id');
-            const grecaptchaWidgetId = grecaptcha.render(document.getElementById(id), {
-                'sitekey': siteKey
-            });
-            $el.attr('data-grecaptcha_widget_id', grecaptchaWidgetId);
-        });
-    }
 
-    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-        var $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
-        var siteKey = $el.data('sitekey');
-        var id = $el.attr('id');
-        const turnstileWidgetId = turnstile.render(document.getElementById(id), {
-            'sitekey': siteKey
-        });
-        $el.attr('data-turnstile_widget_id', turnstileWidgetId);
-    }
-
-    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
-        var $el = $theForm.find('.ff-el-hcaptcha.h-captcha');
-        var siteKey = $el.data('sitekey');
-        var id = $el.attr('id');
-        const hcaptchaWidgetId = hcaptcha.render(document.getElementById(id), {
-            'sitekey': siteKey
-        });
-        $el.attr('data-hcaptcha_widget_id', hcaptchaWidgetId);
-    }
 });
