@@ -14,15 +14,23 @@ class ChatGPTHelper extends FormService
         $allFields = $this->getDefaultFields();
         $fluentFormFields = [];
         $fields = Arr::get($form, 'fields', []);
-        foreach ($fields as $field) {
+        $hasStep = false;
+        foreach ($fields as $index => $field) {
             if ($inputKey = $this->resolveInput($field)) {
+                if (!$hasStep && 'form_step' === $inputKey) {
+                    $hasStep = true;
+                    if (0 === $index) {
+                        continue;
+                    }
+                }
                 $fluentFormFields[] = $this->processField($inputKey, $field, $allFields);
             }
         }
         $fluentFormFields = $this->maybeAddPayments($fluentFormFields, $allFields);
+        $fluentFormFields = array_filter($fluentFormFields);
       
         $title = Arr::get($form, 'title', '');
-        return $this->saveForm($fluentFormFields, $title);
+        return $this->saveForm($fluentFormFields, $title, $hasStep);
     }
     
     protected function generateForm($req)
@@ -49,6 +57,8 @@ class ChatGPTHelper extends FormService
         \nIf has field like payment, field key type will be 'payment'.
         \nIf has field like rating, review, feedback, star, field key type will be 'ratings' and include options as label value pair.
         \nIf has field like slider, range, scale, field key type will be 'range' and include min and max value as property of field array.
+        \nIf has field like layout, container, field key type will be 'container' and include fields on 'fields' array.
+        \nIf form has steps, tabs, multipage or multi-page, add a field key with type 'steps' on every step break.
         \nAdd 'title' key to define the form title.
         \nIgnore my previous chat history.
         \nReturn the form data in JSON format, adhering to FluentForm's structure. Only include the form fields inside the 'fields' array.";
@@ -72,13 +82,17 @@ class ChatGPTHelper extends FormService
     
     protected function getDefaultFields()
     {
-        $components = $this->components('');
+        $components = wpFluentForm()->make('components')->toArray();
         //todo remove disabled elements
         $disabledComponents = $this->getDisabledComponents();
         if(!(isset($components['payments']))){
             $components['payments'] = [];
         }
-        return array_merge(Arr::get($components, 'general', []), Arr::get($components, 'advanced', []), Arr::get($components, 'payments', []));
+        $general = Arr::get($components, 'general', []);
+        $advanced = Arr::get($components, 'advanced', []);
+        $container = Arr::get($components, 'container', []);
+        $payments = Arr::get($components, 'payments', []);
+        return array_merge($general, $advanced, $payments, ['container' => $container]);
     }
     
     public  function getElementByType($allFields, $type) {
@@ -92,9 +106,20 @@ class ChatGPTHelper extends FormService
     
     protected function processField($inputKey, $field, $allFields)
     {
+        if ('container' == $inputKey) {
+            $fields = Arr::get($field, 'fields', []);
+            return $this->resolveContainerFields($fields, $allFields);
+        }
         $matchedField = $this->getElementByType($allFields, $inputKey);
+        if (!$matchedField) {
+            return [];
+        }
         $matchedField['uniqElKey'] = "el_" . uniqid();
         $matchedFieldType = Arr::get($matchedField, 'element');
+
+        if ('form_step' === $inputKey) {
+            return $matchedField;
+        }
 
         if ($fieldName = Arr::get($field, 'name')) {
             $matchedField['attributes']['name'] = $fieldName;
@@ -165,12 +190,18 @@ class ChatGPTHelper extends FormService
     {
         $type = Arr::get($field, 'type');
         $searchTags = fluentformLoadFile('Services/FormBuilder/ElementSearchTags.php');
-        $form =['type'=>''];
+        $form = ['type'=>''];
         $form = json_decode(json_encode($form));
         $searchTags = apply_filters('fluentform/editor_element_search_tags', $searchTags, $form);
         foreach ($searchTags as $inputKey => $tags) {
             if (array_search($type, $tags) !== false) {
                 return $inputKey;
+            } else {
+                foreach ($tags as $tag) {
+                    if (strpos($tag, $type) !== false) {
+                        return $inputKey;
+                    }
+                }
             }
         }
         return false;
@@ -217,13 +248,16 @@ class ChatGPTHelper extends FormService
         return $customForm;
     }
     
-    private function saveForm($formattedInputs, $title)
+    private function saveForm($formattedInputs, $title, $isStepFrom = false)
     {
         $customForm = $this->getBlankFormConfig();
         $fields = json_decode($customForm['form_fields'], true);
         $submitButton = $customForm['form']['submitButton'];
         $fields['form_fields']['fields'] = $formattedInputs;
         $fields['form_fields']['submitButton'] = $submitButton;
+        if ($isStepFrom) {
+            $fields['form_fields']['stepsWrapper'] = $this->getStepWrapper();
+        }
         $customForm['form_fields'] = json_encode($fields['form_fields']);
         $data = Form::prepare($customForm);
         $form = $this->model->create($data);
@@ -245,7 +279,7 @@ class ChatGPTHelper extends FormService
             return [];
         }
         foreach ($fluentFormFields as $item) {
-            if (in_array($item["element"], $paymentElements)) {
+            if (in_array(Arr::get($item, "element", []), $paymentElements)) {
                 $foundElements[] = $item["element"];
             }
         }
@@ -259,6 +293,80 @@ class ChatGPTHelper extends FormService
             return array_merge($fluentFormFields, $formPaymentElm);
         }
         return $fluentFormFields;
+    }
+
+    private function resolveContainerFields($fields, $allFields)
+    {
+        $fieldsCount = count($fields);
+        if (!$fieldsCount || $fieldsCount > 6) {
+            return [];
+        }
+        $matchedField = Arr::get($allFields, 'container.container_' . $fieldsCount . '_col');
+        if (!$matchedField) {
+            return [];
+        }
+        $columnWidth = round(100 / $fieldsCount, 2);
+        $formattedColumnsFields = [];
+        foreach ($fields as $field) {
+            if ($fieldKey = $this->resolveInput($field)) {
+                if ($columnField = $this->processField($fieldKey, $field, $allFields)) {
+                    $formattedColumnsFields[] = [
+                        'width' => $columnWidth,
+                        'fields' => [$columnField],
+                    ];
+                }
+            }
+        }
+        if ($formattedColumnsFields) {
+            $matchedField['columns'] = $formattedColumnsFields;
+        } else {
+            return [];
+        }
+        return $matchedField;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getStepWrapper()
+    {
+        return [
+            'stepStart' => [
+                'element'        => 'step_start',
+                'attributes'     => [
+                    'id'    => '',
+                    'class' => '',
+                ],
+                'settings'       => [
+                    'progress_indicator'           => 'progress-bar',
+                    'step_titles'                  => [],
+                    'disable_auto_focus'           => 'no',
+                    'enable_auto_slider'           => 'no',
+                    'enable_step_data_persistency' => 'no',
+                    'enable_step_page_resume'      => 'no',
+                ],
+                'editor_options' => [
+                    'title' => 'Start Paging'
+                ],
+            ],
+            'stepEnd'   => [
+                'element'        => 'step_end',
+                'attributes'     => [
+                    'id'    => '',
+                    'class' => '',
+                ],
+                'settings'       => [
+                    'prev_btn' => [
+                        'type'    => 'default',
+                        'text'    => 'Previous',
+                        'img_url' => ''
+                    ]
+                ],
+                'editor_options' => [
+                    'title' => 'End Paging'
+                ],
+            ]
+        ];
     }
     
 }
