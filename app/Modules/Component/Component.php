@@ -609,6 +609,10 @@ class Component
 
         $cssClasses = trim($instanceCssClass . ' ff-form-loading');
 
+        if ($this->hasChatGpt($form->settings)) {
+            $cssClasses .= ' ff-has-chat-gpt';
+        }
+
         $output = $formBuilder->build($form, $cssClasses, $instanceCssClass, $atts);
 
         $output = $this->replaceEditorSmartCodes($output, $form);
@@ -1375,5 +1379,11 @@ class Component
             return '';
         });
 
+    }
+
+    public function hasChatGpt($formSettings)
+    {
+        $message = ArrayHelper::get($formSettings, 'confirmation.messageToShow');
+        return ArrayHelper::get($formSettings, 'confirmation.redirectTo') === 'samePage' && strpos($message, '{chat_gpt_response.') !== false;
     }
 }

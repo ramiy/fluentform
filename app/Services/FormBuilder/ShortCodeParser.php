@@ -7,6 +7,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Helpers\Helper;
+use FluentFormPro\classes\Chat\ChatFieldController;
 
 class ShortCodeParser
 {
@@ -472,6 +473,22 @@ class ShortCodeParser
             return apply_filters('fluentform/shortcode_parser_callback_random_string', $value, $prefix, static::getInstance());
         } elseif ('form_title' == $key) {
             return static::getForm()->title;
+        } elseif (false !== strpos($key, 'chat_gpt_response.')) {
+            if (defined('FLUENTFORMPRO')) {
+                $exploded = explode('.', $key);
+                $prefix = array_pop($exploded);
+                if (!$prefix) {
+                    return '';
+                }
+                $exploded = explode('_', $prefix);
+                $formId = reset($exploded);
+                $feedId = end($exploded);
+                $chatGPT = new ChatFieldController(wpFluentForm());
+                if ($chatGPT->isApiEnabled()) {
+                    return $chatGPT->chatGPTSubmissionMessageHandler($formId, $feedId, static::getInstance());
+                }
+            }
+            return '';
         }
 
 
