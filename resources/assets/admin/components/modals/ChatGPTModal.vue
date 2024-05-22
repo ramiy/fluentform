@@ -63,13 +63,21 @@
 			            additional_query: this.additional_query,
 		            })
                 .then((response) => {
-                    this.$notify.success(response.data.message);
+                    this.$notify.success({
+	                    title: this.$t('Success'),
+	                    message: response.data.message,
+	                    position: 'bottom-right'
+                    });
                     if (response.data.redirect_url) {
                         window.location.href = response.data.redirect_url;
                     }
                 })
                 .fail(error => {
-                    this.$notify.error(error.message);
+                    this.$notify.error({
+	                    title: this.$t('Error'),
+	                    message: error.responseJSON?.data.message,
+	                    position: 'bottom-right'
+                    });
                 })
                 .always(() => {
                     this.loading = false;
