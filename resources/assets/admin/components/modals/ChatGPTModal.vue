@@ -26,23 +26,17 @@
                         Create
                     </el-button>
                 </el-form>
-
-
-
             </div><!-- .ff_predefined_options -->
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import each from 'lodash/each';
 
     export default {
         name: 'ChatGPTModal',
         props: {
-            categories: Array,
             visibility: Boolean,
-            predefinedForms: Object
         },
         data() {
             return {
@@ -63,28 +57,24 @@
 
             createForm() {
                 this.loading = true;
-                const url = FluentFormsGlobal.$rest.route('gptForm');
-                FluentFormsGlobal.$rest.post(url, {
-                    query: this.query,
-                    additional_query: this.additional_query,
-                })
+	            FluentFormsGlobal.$post({
+			            action: 'fluentform_chat_gpt_create_form',
+			            query: this.query,
+			            additional_query: this.additional_query,
+		            })
                 .then((response) => {
-                    this.$success(response.message);
-
-                    if (response.redirect_url) {
-                        window.location.href = response.redirect_url;
+                    this.$notify.success(response.data.message);
+                    if (response.data.redirect_url) {
+                        window.location.href = response.data.redirect_url;
                     }
                 })
-                .catch(error => {
-                    this.$fail(error.message);
+                .fail(error => {
+                    this.$notify.error(error.message);
                 })
-                .finally(() => {
+                .always(() => {
                     this.loading = false;
-
                 });
             },
-
-
         },
         mounted() {
         }

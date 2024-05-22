@@ -27,7 +27,7 @@
 
                 <div class="ff_card_wrap mt-5 mb-4">
                     <el-row :gutter="32">
-                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5">
+                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5" v-if="has_gpt_feature">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
@@ -96,7 +96,7 @@
                                 </template>
                             </el-skeleton>
                         </el-col>
-                        <el-col :sm="has_post_feature ? 6 : 8" v-if="has_post_feature">
+                        <el-col :sm="has_post_feature ? 6 : 8" v-if="has_post_feature" class="mb-5">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
@@ -166,6 +166,7 @@
                 innerVisible: false,
                 chatQuery: '',
                 has_post_feature: !!window.FluentFormApp.has_post_feature,
+                has_gpt_feature: !!window.FluentFormApp.has_gpt_feature,
                 postFormData: {
                     type: 'post',
                     predefined: 'blank_form',

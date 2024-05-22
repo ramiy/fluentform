@@ -7,7 +7,6 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Helpers\Helper;
-use FluentFormPro\classes\Chat\ChatFieldController;
 
 class ShortCodeParser
 {
@@ -141,7 +140,7 @@ class ShortCodeParser
             } elseif (false !== strpos($matches[1], 'payment.')) {
                 $property = substr($matches[1], strlen('payment.'));
                 $deprecatedValue = apply_filters_deprecated(
-                    'fluentf    orm_payment_smartcode', [
+                    'fluentform_payment_smartcode', [
                         '',
                         $property,
                         self::getInstance()
@@ -474,7 +473,7 @@ class ShortCodeParser
         } elseif ('form_title' == $key) {
             return static::getForm()->title;
         } elseif (false !== strpos($key, 'chat_gpt_response.')) {
-            if (defined('FLUENTFORMPRO')) {
+            if (defined('FLUENTFORMPRO') && class_exists('\FluentFormPro\classes\Chat\ChatFieldController')) {
                 $exploded = explode('.', $key);
                 $prefix = array_pop($exploded);
                 if (!$prefix) {
@@ -483,8 +482,8 @@ class ShortCodeParser
                 $exploded = explode('_', $prefix);
                 $formId = reset($exploded);
                 $feedId = end($exploded);
-                $chatGPT = new ChatFieldController(wpFluentForm());
-                if ($chatGPT->isApiEnabled()) {
+                $chatGPT = new \FluentFormPro\classes\Chat\ChatFieldController(wpFluentForm());
+                if ($chatGPT->api->isApiEnabled()) {
                     return $chatGPT->chatGPTSubmissionMessageHandler($formId, $feedId, static::getInstance());
                 }
             }

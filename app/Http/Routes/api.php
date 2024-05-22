@@ -11,7 +11,6 @@ $router->prefix('forms')->withPolicy('FormPolicy')->group(function ($router) {
     $router->get('/', 'FormController@index');
     $router->post('/', 'FormController@store');
     $router->get('templates', 'FormController@templates');
-    $router->post('/GptForm', 'FormController@gptForm');
     $router->get('ping', 'FormController@ping');
 
     $router->prefix('{form_id}')->group(function ($router) {

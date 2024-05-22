@@ -79,7 +79,7 @@ class FormService
             $form->title = $form->title . ' (#' . $form->id . ')';
             
             $form->save();
-            dd($form);
+
             $formMeta = FormMeta::prepare($attributes, $predefinedForm);
             
             FormMeta::store($form, $formMeta);
@@ -723,10 +723,5 @@ class FormService
             }
         }
         return $ids;
-    }
-    
-    public function createFromGPT($req)
-    {
-        return (new ChatGPTHelper())->generateAndSaveForm($req);
     }
 }
