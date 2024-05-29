@@ -8,6 +8,11 @@
             </section-head-content>
             <section-head-content>
                 <btn-group>
+	                <btn-group-item>
+		                <el-button size="medium" @click="printEntry({form_id, submission_ids : [entry_id]})">
+			                <i class="ff-icon el-icon-printer"/> <span>{{$t('Print')}}</span>
+		                </el-button>
+	                </btn-group-item>
                     <btn-group-item>
                         <el-button size="medium" :loading="entry_changing_prev" @click="changeEntry('-')" :disabled="!prevId">
                             <i class="ff-icon ff-icon-arrow-left"/> <span>{{$t('Previous')}}</span>

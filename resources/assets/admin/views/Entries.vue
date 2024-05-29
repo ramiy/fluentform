@@ -672,7 +672,11 @@
                         {
                             label: 'Remove from Favorites',
                             action: 'other.unmark_favorite'
-                        }
+                        },
+	                    {
+                            label: 'Print Entries',
+                            action: 'print'
+                        },
                     ]
                 };
 
@@ -901,6 +905,10 @@
                 }
             },
             operationOnSelectedEntries(actionType) {
+				if ('print' === actionType) {
+					this.printEntry({submission_ids: this.selection_ids, form_id : this.form_id, sort_by: this.sort_by});
+					return;
+				}
                 let data = {
                     form_id: this.form_id,
                     entries: this.selection_ids,

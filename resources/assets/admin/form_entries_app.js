@@ -223,6 +223,42 @@ Vue.mixin({
             return (new Acl).verify(permission);
         },
 
+        printEntry(data) {
+            const url = FluentFormsGlobal.$rest.route('printSubmissions');
+            FluentFormsGlobal.$rest.get(url, data)
+                .then(res => {
+                    if (res?.success && res?.content) {
+                        jQuery('#fluentformEntriesPrintFrame').remove(); // Remove existing iframe if it exists
+                        const frame = jQuery('<iframe>', {
+                            id: 'fluentformEntriesPrintFrame',
+                            style: 'display:none;',
+                            width: '100%',
+                            height: '100%'
+                        }).appendTo('body');
+                        let contentWindow = frame[0].contentWindow || frame[0].contentDocument;
+                        if (!contentWindow) {
+                            contentWindow = window.frames['fluentformEntriesPrintFrame']?.contentWindow || window.frames['fluentformEntriesPrintFrame']?.contentDocument;
+                        }
+                        let contentDoc = frame[0].contentDocument || frame[0].contentWindow.document;
+                        if (!contentDoc) {
+                            contentDoc = window.frames['fluentformEntriesPrintFrame']?.contentDocument || contentWindow?.document;
+                        }
+                        contentDoc.open();
+                        contentDoc.write(res.content);
+                        contentDoc.close();
+                        contentWindow.focus();
+                        contentWindow.print();
+                    } else {
+                        this.$fail(res.message || this.$t('Failed to print.'));
+                    }
+                })
+                .catch(error => {
+                    this.$fail(error.message);
+                })
+                .finally(() => {
+                })
+        },
+
         ...notifier
     },
     filters: {
