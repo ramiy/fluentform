@@ -407,7 +407,8 @@
                         </template>
                         <el-radio-group v-model="misc.akismet_validation">
                             <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
-                            <el-radio label="validation_failed">{{ $t('Make the form submission as failed') }}</el-radio>
+                            <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
+                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>
                         </el-radio-group>
 
                     </el-form-item>
