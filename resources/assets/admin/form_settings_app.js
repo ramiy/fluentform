@@ -134,6 +134,7 @@ import EditGeneralIntegration from './components/settings/GeneralIntegration/Int
 import PdfFeeds from './components/settings/PdfFeeds.vue';
 import PaymentSettings from './components/settings/PaymentSettings.vue';
 import QuizSettings from './components/settings/QuizSettings.vue';
+import CustomComponent from './components/CustomComponent.vue';
 
 const routes = [
     {
@@ -205,6 +206,11 @@ const routes = [
         path: '/quiz_settings',
         name: 'quiz_settings',
         component: QuizSettings
+    },
+    {
+        path: '/custom-settings-component/:component_name',
+        name: 'custom_settings',
+        component: CustomComponent
     }
 ];
 

@@ -52,6 +52,7 @@ import {
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
 import { handleSidebarActiveLink } from '@/admin/helpers';
+import CustomComponent from '@/admin/components/CustomComponent';
 
 locale.use(lang);
 Vue.use(Button);
@@ -111,12 +112,14 @@ new Vue({
         'double_optin_settings': DoubleOptinSettings,
         managers: ManagersSettings,
         inventory_manager: InventoryManager,
+        custom_component: CustomComponent,
         license: License
 
     },
     data: {
         component: 'settings',
         App: window.FluentFormApp,
+        component_name: '',
         settings_key: ''
     },
     methods: {
@@ -129,6 +132,7 @@ new Vue({
             }
             if (this.$options.components[component]) {
                 this.settings_key = jQuery($el).attr('data-settings_key');
+                this.component_name = $el.data('component_name') || '';
                 this.component = component;
                 // set route hash
                 location.hash = hash;
