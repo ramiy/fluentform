@@ -22,10 +22,6 @@ class SubmissionPrint
         if (!$submissions || !$form) {
             throw new \Exception(__('Invalid Submissions', 'fluentform'));
         }
-        // Force FormDataParser::parseFormSubmission() to parse every submission
-        if (count($submissions) > 1 && !defined('FLUENTFORM_FORCE_PARSE_FORM_SUBMISSION')) {
-            define('FLUENTFORM_FORCE_PARSE_FORM_SUBMISSION', true);
-        }
         $pdfBody = $this->getBody($submissions, $form);
         $pdfCss = '<style>' . $this->getCss() . '</style>';
         return fluentform_sanitize_html($pdfCss . $pdfBody);
