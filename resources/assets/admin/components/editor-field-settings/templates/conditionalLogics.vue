@@ -148,7 +148,7 @@
                     'subscription_payment_component'
                 ],
                 showPreventMessage: false,
-                emptyRules: { field: '', value: '', operator: '', numeric_formatter: '' }
+                emptyRules: { field: '', value: '', operator: '' }
             }
         },
         computed: {
@@ -250,47 +250,8 @@
                                         field_label: formItem.settings.label,
                                     }
                                     this.editItem.settings.conditional_logics.conditions.map(cond => {
-                                        if (cond.value) {
+                                        if (cond.value && formItem.attributes.name === cond.field && formItem.settings.numeric_formatter) {
                                             cond.numeric_formatter = formItem.settings.numeric_formatter;
-                                            let formatConfig = {};
-                                            if (cond.numeric_formatter) {
-                                                if (cond.numeric_formatter === 'comma_dot_style') {
-                                                    formatConfig = {
-                                                        'decimal': '.',
-                                                        'separator': ',',
-                                                        'precision': 2,
-                                                        'symbol': '',
-                                                    }
-                                                } else if (cond.numeric_formatter === 'dot_comma_style_zero') {
-                                                    formatConfig = {
-                                                        'decimal': '.',
-                                                        'separator': ',',
-                                                        'precision': 0,
-                                                        'symbol': '',
-                                                    }
-                                                } else if (cond.numeric_formatter === 'dot_comma_style') {
-                                                    formatConfig = {
-                                                        'decimal': ',',
-                                                        'separator': '.',
-                                                        'precision': 2,
-                                                        'symbol': '',
-                                                    }
-                                                } else if (cond.numeric_formatter === 'comma_dot_style_zero') {
-                                                    formatConfig = {
-                                                        'decimal': ',',
-                                                        'separator': '.',
-                                                        'precision': 0,
-                                                        'symbol': '',
-                                                    }
-                                                }
-
-                                                const $el = jQuery('.condition-value');
-                                                if ($el.length) {
-                                                    $el.on('blur change', function () {
-                                                        cond.value = currency(cond.value, formatConfig).format();
-                                                    })
-                                                }
-                                            }
                                         }
                                     });
                                 }

@@ -121,13 +121,6 @@ class Menu
             true
         );
 
-        wp_register_script(
-            'currency',
-            fluentformMix('libs/currency.min.js'),
-            [],
-            '2.0.3',
-            true
-        );
 
         wp_register_style(
             'fluentform_editor_style',
@@ -849,8 +842,6 @@ class Menu
         }
 
         wp_enqueue_script('fluentform_editor_script');
-
-        wp_enqueue_script('currency');
 
         $jsonData = $form->form_fields;
 
