@@ -248,6 +248,7 @@ Improve your website’s efficiency by bridging the gap from visitor input to em
 * Zapier
 * WebHook
 * Google Sheets
+* ChatGPT
 * ActiveCampaign
 * Campaign Monitor
 * Constant Contact

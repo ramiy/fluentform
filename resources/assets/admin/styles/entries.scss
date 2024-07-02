@@ -761,3 +761,34 @@ span.ff_tag {
 .ff_report_card + .ff_print_hide {
   margin-top: 40px;
 }
+
+.ff_as_container{
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+  margin-bottom: 20px;
+  padding: 5px 10px 5px;
+
+  .ff_rich_filters{
+    padding: 10px;
+    background: #fdfdfd;
+    border: 1px solid #efefef;
+  }
+  .ff_cond_or {
+    border-bottom: 1px dashed #d5dce1;
+    margin: 0 0 15px;
+    color: gray;
+    padding: 0;
+    text-align: center;
+    line-height: 100%;
+    em {
+      background: #fff;
+      font-size: 1.2em;
+      font-style: normal;
+      margin: 0 10px;
+      padding: 0 10px;
+      position: relative;
+      top: 9px;
+    }
+  }
+}

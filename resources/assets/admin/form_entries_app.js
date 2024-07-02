@@ -38,7 +38,10 @@ import {
     Alert,
     Skeleton,
     SkeletonItem,
-    Tooltip
+    Tooltip,
+    Cascader,
+    CascaderPanel
+
 } from 'element-ui';
 Vue.use(Vddl);
 Vue.use(Form);
@@ -71,6 +74,8 @@ Vue.use(Dialog)
 Vue.use(Skeleton)
 Vue.use(SkeletonItem)
 Vue.use(Tooltip)
+Vue.use(Cascader)
+Vue.use(CascaderPanel)
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
