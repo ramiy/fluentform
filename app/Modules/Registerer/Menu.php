@@ -906,6 +906,31 @@ class Menu
                 }
 
                 $formFields['fields'] = array_values($formFields['fields']);
+
+                if ($submitButton = ArrayHelper::get($formFields, 'submitButton')) {
+                    apply_filters(
+                        'fluentform/editor_init_element_submit_button',
+                        $submitButton,
+                        $form
+                    );
+                }
+
+                if ($stepStart = ArrayHelper::get($formFields, 'stepsWrapper.stepStart')) {
+                    apply_filters(
+                        'fluentform/editor_init_element_step_start',
+                        $stepStart,
+                        $form
+                    );
+                }
+
+                if ($stepEnd = ArrayHelper::get($formFields, 'stepsWrapper.stepEnd')) {
+                    apply_filters(
+                        'fluentform/editor_init_element_step_end',
+                        $stepEnd,
+                        $form
+                    );
+                }
+
                 $formFields = json_encode($formFields, true);
             }
 
