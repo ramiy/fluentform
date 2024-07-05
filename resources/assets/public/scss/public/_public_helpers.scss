@@ -125,259 +125,275 @@
     margin-bottom: 0px;
   }
 
-  .ff_center {
-    text-align: center;
-  }
-
-  .ff_right {
-    text-align: right;
-  }
-
-  .ff_left {
-    text-align: left;
-  }
-
-  .ff-form-inline {
-    > .ff-el-group, > .ff-name-field-wrapper, .ff-t-container {
-      display: inline-block;
-      margin-right: 10px;
-      vertical-align: top;
-
-      > .ff-el-input--label, .ff-t-cell .ff-el-input--label {
-        display: none;
-      }
-
-      .ff-el-input--content {
-        margin-left: 0px;
-      }
-
-      &:last-child {
-        margin-right: 0px;
+  .ff-dropzone {
+    .ff_upload_btn.ff-btn {
+      color: var(--fluentform-secondary);
+      padding: 35px;
+      width: 100%;
+      border: 1px dashed var(--fluentform-primary);
+      border-radius: var(--fluentform-border-radius);
+      background: rgba(223, 240, 255, 0.13);
+      transition: all ease 0.2s;
+      display: block;
+      text-align: center;
+      &:hover {
+        background: rgba(223, 240, 255, 0.49);
       }
     }
-  }
-  .ff-t-container .ff-name-title{
-    width: 40%;
-  }
-
-  .ff_hide_label .ff-el-input--label {
-    display: none;
-  }
-
-  .field-value {
-    white-space: pre-line;
-  }
-
-  .ff-el-group .ff-read-only {
-    background-color: #e9ecef !important;
-    opacity: 1;
-    pointer-events: none;
-  }
-
-  label.ff-el-image-input-src {
-    width: 200px;
-    height: 200px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    cursor: pointer;
-    display: block;
-  }
-
-  .ff-el-image-holder {
-    width: 200px;
-    float: left;
-    margin-right: 20px;
-    margin-bottom: 20px;
-
-    .ff-el-form-check-label {
-      padding-left: 1px;
+    .ff-uploaded-list {
+      margin-top: 10px ;
     }
   }
+    .ff_center {
+      text-align: center;
+    }
+    .ff_right {
+      text-align: right;
+    }
+    .ff_left {
+      text-align: left;
+    }
+    .ff-form-inline {
+      > .ff-el-group, > .ff-name-field-wrapper, .ff-t-container {
+        display: inline-block;
+        margin-right: 10px;
+        vertical-align: top;
 
-  .ff_el_checkable_photo_holders {
-    display: block;
-    margin-bottom: -20px;
-    overflow: hidden;
-  }
+        > .ff-el-input--label, .ff-t-cell .ff-el-input--label {
+          display: none;
+        }
 
-  .select2-container {
-    width: 100% !important;
+        .ff-el-input--content {
+          margin-left: 0px;
+        }
 
-    .select2-selection__rendered li {
-      margin: 0;
+        &:last-child {
+          margin-right: 0px;
+        }
+      }
+    }
+    .ff-t-container .ff-name-title {
+      width: 40%;
     }
 
-    .select2-search--inline > input {
-      margin-top: 0px;
-      height: calc(2.25rem + 2px);
-      padding: .375rem 1.75rem .375rem .75rem;
-      line-height: 1.5;
-    }
-  }
-
-  .ff-el-form-bottom {
-    display: flex;
-    flex-direction: column-reverse;
-    .ff-el-input--label {
-      margin-bottom: 0;
-      margin-top: 5px;
-    }
-  }
-  // tiny mce
-  .mce-tinymce.mce-container.mce-panel {
-    border: 1px solid #ced4da;
-  }
-
-  // input group
-  .ff_input-group {
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-box-align: stretch;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    width: 100%;
-
-    > .ff-el-form-control:not(:first-child) {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      display: inline-block;
-      width: auto;
+    .ff_hide_label .ff-el-input--label {
+      display: none;
     }
 
-    > .ff-el-form-control:not(:last-child) {
+    .field-value {
+      white-space: pre-line;
+    }
+
+    .ff-el-group .ff-read-only {
+      background-color: #e9ecef !important;
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    label.ff-el-image-input-src {
+      width: 200px;
+      height: 200px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      cursor: pointer;
+      display: block;
+    }
+
+    .ff-el-image-holder {
+      width: 200px;
+      float: left;
+      margin-right: 20px;
+      margin-bottom: 20px;
+
+      .ff-el-form-check-label {
+        padding-left: 1px;
+      }
+    }
+
+    .ff_el_checkable_photo_holders {
+      display: block;
+      margin-bottom: -20px;
+      overflow: hidden;
+    }
+
+    .select2-container {
+      width: 100% !important;
+
+      .select2-selection__rendered li {
+        margin: 0;
+      }
+
+      .select2-search--inline > input {
+        margin-top: 0px;
+        height: calc(2.25rem + 2px);
+        padding: .375rem 1.75rem .375rem .75rem;
+        line-height: 1.5;
+      }
+    }
+
+    .ff-el-form-bottom {
+      display: flex;
+      flex-direction: column-reverse;
+      .ff-el-input--label {
+        margin-bottom: 0;
+        margin-top: 5px;
+      }
+    }
+    // tiny mce
+    .mce-tinymce.mce-container.mce-panel {
+      border: 1px solid #ced4da;
+    }
+
+    // input group
+    .ff_input-group {
+      position: relative;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+      align-items: stretch;
+      width: 100%;
+
+      > .ff-el-form-control:not(:first-child) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        display: inline-block;
+        width: auto;
+      }
+
+      > .ff-el-form-control:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .ff-el-form-control {
+        position: relative;
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        width: 1%;
+        margin-bottom: 0;
+      }
+    }
+
+    .ff_input-group-prepend {
+      margin-right: -1px;
+    }
+
+    .input-group-append {
+      margin-left: -1px;
+    }
+
+    .ff_input-group-append, .ff_input-group-prepend {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+    }
+
+    .ff_input-group > .ff_input-group-prepend > .ff_input-group-text {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
     }
 
-    .ff-el-form-control {
-      position: relative;
-      -webkit-box-flex: 1;
-      -ms-flex: 1 1 auto;
-      flex: 1 1 auto;
-      width: 1%;
-      margin-bottom: 0;
+    .ff_input-group > .ff_input-group-append > .ff_input-group-text {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
-  }
 
-  .ff_input-group-prepend {
-    margin-right: -1px;
-  }
+    .ff_input-group-text {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      padding: .375rem .75rem;
+      margin-bottom: 0;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #495057;
+      text-align: center;
+      white-space: nowrap;
+      background-color: #e9ecef;
+      border-radius: .25rem;
+    }
 
-  .input-group-append {
-    margin-left: -1px;
-  }
-
-  .ff_input-group-append, .ff_input-group-prepend {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-  }
-
-  .ff_input-group > .ff_input-group-prepend > .ff_input-group-text {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .ff_input-group > .ff_input-group-append > .ff_input-group-text {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  .ff_input-group-text {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    padding: .375rem .75rem;
-    margin-bottom: 0;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    text-align: center;
-    white-space: nowrap;
-    background-color: #e9ecef;
-    border-radius: .25rem;
-  }
-
-  // coupon wrapper
-  .ff_coupon_wrapper {
-    .ff_input-group-append {
-      cursor: pointer;
-      &:hover {
-        .ff_input-group-text {
-          background: #e3e8ed;
+    // coupon wrapper
+    .ff_coupon_wrapper {
+      .ff_input-group-append {
+        cursor: pointer;
+        &:hover {
+          .ff_input-group-text {
+            background: #e3e8ed;
+          }
         }
       }
     }
-  }
-  
-  ul.ff_coupon_responses {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    li {
-      padding-top: 5px;
-    }
-  
-    span.error-clear {
-      font-weight: bold;
-      color: #ff5050;
-      margin-right: 10px;
-    }
-  
-    .ff_error {
-      color: #f56c6c;
-      cursor: pointer;
-    }
-  
-    .ff_success {
-      color: #28a745;
-    }
-  }
 
-  // button styles
-  .ff-btn {
-    &.disabled {
-      opacity: .65;
-    }
-    &.ff-working {
-      position: relative;
-      transition: all 0.3s ease;
-      &:after {
-        content: '';
-        position: absolute;
-        bottom: -0;
-        height: 5px;
-        left: 0;
-        right: 0;
-        background: rgba(255, 255, 255, 0.4);
-        animation: ff-progress-anim 4s infinite 0s;
+    ul.ff_coupon_responses {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        padding-top: 5px;
+      }
+
+      span.error-clear {
+        font-weight: bold;
+        color: #ff5050;
+        margin-right: 10px;
+      }
+
+      .ff_error {
+        color: #f56c6c;
+        cursor: pointer;
+      }
+
+      .ff_success {
+        color: #28a745;
       }
     }
-    // full width button
-    &-block {
-      display: block;
-      width: 100%;
 
-      + #{$el-prefix}-btn-block {
-        margin-top: 8px;
+    // button styles
+    .ff-btn {
+      &.disabled {
+        opacity: .65;
+      }
+      &.ff-working {
+        position: relative;
+        transition: all 0.3s ease;
+        &:after {
+          content: '';
+          position: absolute;
+          bottom: -0;
+          height: 5px;
+          left: 0;
+          right: 0;
+          background: rgba(255, 255, 255, 0.4);
+          animation: ff-progress-anim 4s infinite 0s;
+        }
+      }
+      // full width button
+      &-block {
+        display: block;
+        width: 100%;
+
+        + #{$el-prefix}-btn-block {
+          margin-top: 8px;
+        }
       }
     }
-  }
-  .ff_submitting {
-    pointer-events: none;
-  }
-    
+    .ff_submitting {
+      pointer-events: none;
+    }
 
-}
+
+  }
 
 @keyframes ff-progress-anim {
   0% {

@@ -38,6 +38,18 @@
       z-index: 0;
     }
 
+    .ff_upload_btn_editor {
+      span.ff-dropzone-preview {
+        color: $base-text;
+        padding: 35px;
+        width: 100%;
+        border: 1px dashed $primary;
+        border-radius: 7px;
+        background: rgba(223, 240, 255, 0.13);
+        display: block;
+        text-align: center;
+      }
+    }
   }
 
   .ff-el-form-bottom {
