@@ -26,7 +26,7 @@ class GlobalNotificationHandler
         $this->globalNotificationService = new GlobalNotificationService();
     }
     
-    public function globalNotify($insertId, $formData, $form)
+    public function globalNotify($insertId, $formData, $form, $isDraftSubmission = false)
     {
         // Let's find the feeds that are available for this form
         $feeds = apply_filters_deprecated(
@@ -105,8 +105,12 @@ class GlobalNotificationHandler
             $oldAction = 'fluentform_integration_notify_' . $feed['meta_key'];
             $newAction = 'fluentform/integration_notify_' . $feed['meta_key'];
             
-            if (! $entry) {
-                $entry = $this->globalNotificationService->getEntry($insertId, $form);
+            if (!$entry) {
+                if ($isDraftSubmission) {
+                    $entry = $this->globalNotificationService->getPartialEntry($insertId, $form);
+                } else {
+                    $entry = $this->globalNotificationService->getEntry($insertId, $form);
+                }
             }
             // skip emails which will be sent on payment form submit otherwise email is sent after payment success
             if (!! $form->has_payment && ('notifications' == $feed['meta_key'])) {
@@ -118,7 +122,7 @@ class GlobalNotificationHandler
             // It's sync
             $processedValues = $feed['settings'];
             unset($processedValues['conditionals']);
-            $processedValues = ShortCodeParser::parse($processedValues, $insertId, $formData, $form, false, $feed['meta_key']);
+            $processedValues = ShortCodeParser::parse($processedValues, $insertId, $formData, $form, false, $feed['meta_key'], $isDraftSubmission);
             $feed['processedValues'] = $processedValues;
 
             $isAsync = apply_filters_deprecated(

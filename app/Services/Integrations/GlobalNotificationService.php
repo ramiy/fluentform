@@ -33,6 +33,13 @@ class GlobalNotificationService
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         return FormDataParser::parseFormEntry($submission, $form, $formInputs);
     }
+
+    public function getPartialEntry($id, $form)
+    {
+        $draftSubmission = wpFluent()->table('fluentform_draft_submissions')->find($id);
+        $formInputs = FormFieldsParser::getEntryInputs($form);
+        return FormDataParser::parseFormEntry($draftSubmission, $form, $formInputs);
+    }
     
     public function cleanUpPassword($insertId, $form)
     {

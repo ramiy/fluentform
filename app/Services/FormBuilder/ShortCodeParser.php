@@ -14,6 +14,8 @@ class ShortCodeParser
 
     protected static $entry = null;
 
+    protected static $partialEntry = null;
+
     protected static $browser = null;
 
     protected static $formFields = null;
@@ -29,16 +31,16 @@ class ShortCodeParser
         'submission'      => null,
     ];
 
-    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $providerOrIsHTML = false)
+    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $providerOrIsHTML = false, $isDraftSubmission = false)
     {
         try {
-            static::setDependencies($entryId, $data, $form, $providerOrIsHTML);
+            static::setDependencies($entryId, $data, $form, $providerOrIsHTML, $isDraftSubmission);
 
             if (is_array($parsable)) {
-                return static::parseShortCodeFromArray($parsable, $isUrl, $providerOrIsHTML);
+                return static::parseShortCodeFromArray($parsable, $isUrl, $providerOrIsHTML, $isDraftSubmission);
             }
 
-            return static::parseShortCodeFromString($parsable, $isUrl, $providerOrIsHTML);
+            return static::parseShortCodeFromString($parsable, $isUrl, $providerOrIsHTML, $isDraftSubmission);
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log($e->getTraceAsString());
@@ -47,45 +49,57 @@ class ShortCodeParser
         }
     }
 
-    protected static function setDependencies($entry, $data, $form, $provider)
+    protected static function setDependencies($entry, $data, $form, $provider, $isDraftSubmission = false)
     {
-        static::setEntry($entry);
-        static::setData($data);
-        static::setForm($form);
+        static::setEntry($entry, $isDraftSubmission);
+        static::setData($data, $isDraftSubmission);
+        static::setForm($form, $isDraftSubmission);
         static::$provider = $provider;
     }
 
-    protected static function setEntry($entry)
+    protected static function setEntry($entry, $isDraftSubmission = false)
     {
-        static::$entry = $entry;
+        if ($isDraftSubmission) {
+            static::$partialEntry = $entry;
+        } else {
+            static::$entry = $entry;
+        }
     }
 
-    protected static function setdata($data)
+    protected static function setdata($data, $isDraftSubmission = false)
     {
         if (! is_null($data)) {
             static::$store['inputs'] = $data;
             static::$store['original_inputs'] = $data;
         } else {
-            $data = json_decode(static::getEntry()->response, true);
+            if ($isDraftSubmission) {
+                $data = json_decode(static::getEntry($isDraftSubmission)->response, true);
+            } else {
+                $data = json_decode(static::getEntry()->response, true);
+            }
             static::$store['inputs'] = $data;
             static::$store['original_inputs'] = $data;
         }
     }
 
-    protected static function setForm($form)
+    protected static function setForm($form, $isDraftSubmission = false)
     {
         if (! is_null($form)) {
             static::$form = $form;
         } else {
-            static::$form = static::getEntry()->form_id;
+            if ($isDraftSubmission) {
+                static::$form = static::getEntry($isDraftSubmission)->form_id;
+            } else {
+                static::$form = static::getEntry()->form_id;
+            }
         }
     }
 
-    protected static function parseShortCodeFromArray($parsable, $isUrl = false, $provider = false)
+    protected static function parseShortCodeFromArray($parsable, $isUrl = false, $provider = false, $isDraftSubmission = false)
     {
         foreach ($parsable as $key => $value) {
             if (is_array($value)) {
-                $parsable[$key] = static::parseShortCodeFromArray($value, $isUrl, $provider);
+                $parsable[$key] = static::parseShortCodeFromArray($value, $isUrl, $provider, $isDraftSubmission);
             } else {
                 $isHtml = false;
                 if ($provider) {
@@ -102,19 +116,19 @@ class ShortCodeParser
                     );
                     $isHtml = apply_filters('fluentform/will_return_html', $isHtml, $provider, $key);
                 }
-                $parsable[$key] = static::parseShortCodeFromString($value, $isUrl, $isHtml);
+                $parsable[$key] = static::parseShortCodeFromString($value, $isUrl, $isHtml, $isDraftSubmission);
             }
         }
 
         return $parsable;
     }
 
-    protected static function parseShortCodeFromString($parsable, $isUrl = false, $isHtml = false)
+    protected static function parseShortCodeFromString($parsable, $isUrl = false, $isHtml = false, $isDraftSubmission = false)
     {
         if (! $parsable) {
             return '';
         }
-        return preg_replace_callback('/{+(.*?)}/', function ($matches) use ($isUrl, $isHtml) {
+        return preg_replace_callback('/{+(.*?)}/', function ($matches) use ($isUrl, $isHtml, $isDraftSubmission) {
             $value = '';
             if (false !== strpos($matches[1], 'inputs.')) {
                 $formProperty = substr($matches[1], strlen('inputs.'));
@@ -152,7 +166,7 @@ class ShortCodeParser
 
                 $value = apply_filters('fluentform/payment_smartcode', $deprecatedValue, $property, self::getInstance());
             } else {
-                $value = static::getOtherData($matches[1]);
+                $value = static::getOtherData($matches[1], $isDraftSubmission);
             }
 
             if (is_array($value)) {
@@ -378,7 +392,7 @@ class ShortCodeParser
         return '';
     }
 
-    protected static function getOtherData($key)
+    protected static function getOtherData($key, $isDraftSubmission = false)
     {
         if (0 === strpos($key, 'date.')) {
             $format = str_replace('date.', '', $key);
@@ -394,7 +408,11 @@ class ShortCodeParser
         } elseif (in_array($key, ['all_data', 'all_data_without_hidden_fields'])) {
             $formFields = FormFieldsParser::getEntryInputs(static::getForm());
             $inputLabels = FormFieldsParser::getAdminLabels(static::getForm(), $formFields);
-            $response = FormDataParser::parseFormSubmission(static::getEntry(), static::getForm(), $formFields, true);
+            if ($isDraftSubmission) {
+                $response = FormDataParser::parseFormSubmission(static::getEntry($isDraftSubmission), static::getForm(), $formFields, true);
+            } else {
+                $response = FormDataParser::parseFormSubmission(static::getEntry(), static::getForm(), $formFields, true);
+            }
 
             $status = apply_filters_deprecated(
                 'fluentform_all_data_skip_password_field',
@@ -561,8 +579,16 @@ class ShortCodeParser
         return static::$provider;
     }
 
-    public static function getEntry()
+    public static function getEntry($isDraftSubmission = false)
     {
+        if ($isDraftSubmission) {
+            if (!is_object(static::$partialEntry)) {
+                static::$partialEntry = wpFluent()->table('fluentform_draft_submissions')->find(static::$partialEntry);
+            }
+
+            return static::$partialEntry;
+        }
+
         if (! is_object(static::$entry)) {
             static::$entry = wpFluent()->table('fluentform_submissions')->find(static::$entry);
         }
@@ -602,6 +628,7 @@ class ShortCodeParser
     {
         self::$form = null;
         self::$entry = null;
+        self::$partialEntry = null;
         self::$browser = null;
         self::$formFields = null;
 

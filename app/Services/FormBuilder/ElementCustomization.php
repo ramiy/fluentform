@@ -202,8 +202,8 @@ $element_customization_settings = [
     ],
     'button_ui' => [
         'template'  => 'prevNextButton',
-        'label'     => __('Submit Button', 'fluentform'),
-        'help_text' => __('This is form submission button.', 'fluentform'),
+        'label'     => __('Button Type', 'fluentform'),
+        'help_text' => __('Set as a default button or image icon type button', 'fluentform'),
     ],
     'align' => [
         'template'  => 'radio',
